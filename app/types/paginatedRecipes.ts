@@ -1,7 +1,7 @@
-import type {Recipe} from "~/types/recipeRecommendation";
+import type {FullRecipe} from "~/types/fullRecipe";
 
 export interface PaginatedRecipes {
-  content: Recipe[]
+  content: FullRecipe[]
   totalPages: number
   totalElements: number
   size: number
