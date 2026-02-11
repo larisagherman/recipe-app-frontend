@@ -1,7 +1,6 @@
 <script setup>
 
-import {useRecipe} from "~/composables/useRecipe.js";
-const {recipes,hasMore,page,loadRecipes}=useRecipe()
+const {recipes}=useRecipe()
 </script>
 
 <template>
@@ -15,11 +14,9 @@ const {recipes,hasMore,page,loadRecipes}=useRecipe()
       <p><strong>Servings:</strong> {{ recipe.servings }}</p>
       <h3>Ingredients:</h3>
       <pre>{{ recipe.ingredients }}</pre>
-      <h3>Directions:</h3>
-      <pre>{{ recipe.directions }}</pre>
+
     </div>
 
-    <button v-if="hasMore" @click="loadRecipes">Load More</button>
   </div>
 </template>
 

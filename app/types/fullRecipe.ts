@@ -1,4 +1,4 @@
-export interface Recipe {
+export interface FullRecipe {
     id: number
     name: string
     ingredients: string

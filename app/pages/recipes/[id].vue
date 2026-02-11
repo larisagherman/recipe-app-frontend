@@ -14,11 +14,12 @@ onMounted(() => {
 
 <template>
   <div>
+    <NuxtLink to="/" class="text-amber-700">Home</NuxtLink>
     <h1>Recipes</h1>
 
     <div v-if="recipe"  class="recipe-card">
       <h2>{{ recipe.name }}</h2>
-      <img :src="recipe.imgSrc" :alt="recipe.name" />
+      <img class="w-64 " :src="recipe.imgSrc" :alt="recipe.name" />
       <p><strong>Prep Time:</strong> {{ recipe.prepTime }} | <strong>Cook Time:</strong> {{ recipe.cookTime }}</p>
       <p><strong>Servings:</strong> {{ recipe.servings }}</p>
       <h3>Ingredients:</h3>

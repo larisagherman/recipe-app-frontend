@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type {RecipeRecommendation} from "~/types/recipeRecommendation";
-import type {PaginatedRecipes} from "~/types/recommendation";
-import type {Recipe} from "~/types/recipe";
+import type {PaginatedRecipes} from "~/types/paginatedRecipes";
+import type {FullRecipe} from "~/types/fullRecipe";
 
 export const useRecipe = () => {
     const recipes = ref<RecipeRecommendation[]>([])   // store recipes
@@ -26,7 +26,7 @@ export const useRecipe = () => {
     }
     const getRecipeById = async (id:number ) => {
         try{
-            const response= await $fetch<Recipe>(`http://localhost:8080/recipes/${id}`,{
+            const response= await $fetch<FullRecipe>(`http://localhost:8080/recipes/${id}`,{
                 method:'GET'
             })
             recipe.value=response
