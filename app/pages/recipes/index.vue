@@ -6,6 +6,8 @@ const {recipes}=useRecipe()
 
 <template>
   <div>
+    <NuxtLink to="/" class="text-amber-700">Home</NuxtLink>
+
     <h1>Recipes</h1>
 
     <div v-for="recipe in recipes" :key="recipe.id" class="recipe-card">
