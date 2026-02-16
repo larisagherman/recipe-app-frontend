@@ -1,6 +1,7 @@
-import type {FullRecipe} from "~/types/fullRecipe";
+import {FullRecipe} from "~/app/types/fullRecipe";
 
 export interface PaginatedRecipes {
+  page: number;
   content: FullRecipe[]
   totalPages: number
   totalElements: number

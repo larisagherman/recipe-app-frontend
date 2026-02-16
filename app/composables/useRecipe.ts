@@ -1,47 +1,131 @@
-import { ref } from 'vue'
-import type {RecipeRecommendation} from "~/types/recipeRecommendation";
-import type {PaginatedRecipes} from "~/types/paginatedRecipes";
+import { ref } from 'vue';
 import type {FullRecipe} from "~/types/fullRecipe";
-
+import type {Recommendation} from "~/types/Recommendation";
+import type {PaginatedRecipes} from "~/types/paginatedRecipes";
 export const useRecipe = () => {
-    const recipes = ref<RecipeRecommendation[]>([])   // store recipes
-    const page = ref(0)                 // current page
-    const pageSize = 10                  // number per page
-    const hasMore = ref(true)
-    const recipe=ref()
-    const loadRecipes = async () => {
+    const config = useRuntimeConfig();
+    const baseUrl = config.public.apiBaseUrl || 'http://localhost:8080';
+
+    // State
+    const recipes = ref<FullRecipe[]>([]);
+    const recipe = ref<FullRecipe | null>(null);
+    const recommendations = ref<Recommendation[]>([]);
+    const loading = ref<boolean>(false);
+    const error = ref<string | null>(null);
+    const pagination = ref<{
+        totalPages: number;
+        totalElements: number;
+        currentPage: number;
+        size: number;
+    }>({
+        totalPages: 0,
+        totalElements: 0,
+        currentPage: 0,
+        size: 10,
+    });
+
+    // Fetch all recipes with pagination
+    const fetchRecipes = async (page: number = 0, size: number = 10) => {
+        loading.value = true;
+        error.value = null;
         try {
-            const response = await $fetch<PaginatedRecipes>(`http://localhost:8080/recipes/page?page=${page.value}&size=${pageSize}`)
-
-            // Spring Page object has "content" and "totalPages"
-            const newRecipes = response.content
-            recipes.value.push(...newRecipes)
-
-            // Check if there are more pages
-            hasMore.value = page.value < response.totalPages - 1
-            page.value++
-        } catch (err) {
-            console.error('Error fetching recipes:', err)
+            const data = await $fetch<PaginatedRecipes>(`${baseUrl}/recipes/page`, { // <-- add /page
+                params: { page, size },
+            });
+            recipes.value = data.content;
+            pagination.value = {
+                totalPages: data.totalPages,
+                totalElements: data.totalElements,
+                currentPage: data.page, // Swagger uses "page" not "number"
+                size: data.size,
+            };
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : 'Failed to fetch recipes';
+            console.error('Error fetching recipes:', e);
+        } finally {
+            loading.value = false;
         }
-    }
-    const getRecipeById = async (id:number ) => {
-        try{
-            const response= await $fetch<FullRecipe>(`http://localhost:8080/recipes/${id}`,{
-                method:'GET'
-            })
-            recipe.value=response
-        }catch(err){
-            console.error('Error fetching recipe by id:', err)
-        }
+    };
 
+
+    // Get a recipe by ID
+    const getRecipeById = async (id: number) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const data = await $fetch<FullRecipe>(`${baseUrl}/recipes/${id}`);
+            recipe.value = data;
+            return data;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : 'Failed to fetch recipe';
+            console.error('Error fetching recipe:', e);
+            return null;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    // Search recipes by name
+    const searchRecipes = async (query: string, page: number = 0, size: number = 10) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const data = await $fetch<PaginatedRecipes>(`${baseUrl}/recipes/search`, {
+                params: { query, page, size },
+            });
+            recipes.value = data.content;
+            pagination.value = {
+                totalPages: data.totalPages,
+                totalElements: data.totalElements,
+                currentPage: data.number,
+                size: data.size,
+            };
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : 'Failed to search recipes';
+            console.error('Error searching recipes:', e);
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    // Get recipe recommendations based on ingredients
+    const getRecommendations = async (ingredients: string[]) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const data = await $fetch<Recommendation[]>(`${baseUrl}/recipes/recommendations`, {
+                method: 'POST',
+                body: { ingredients },
+            });
+            recommendations.value = data;
+            return data;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : 'Failed to get recommendations';
+            console.error('Error getting recommendations:', e);
+            return [];
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    // Initialize - fetch recipes on composable use
+    if (recipes.value.length === 0) {
+        fetchRecipes();
     }
 
     return {
+        // State
         recipes,
-        loadRecipes,
-        hasMore,
-        page,
         recipe,
+        recommendations,
+        loading,
+        error,
+        pagination,
+        // Methods
+        fetchRecipes,
         getRecipeById,
-    }
-}
+        searchRecipes,
+        getRecommendations,
+    };
+};
+

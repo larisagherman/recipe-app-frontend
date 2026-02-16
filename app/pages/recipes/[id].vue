@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useRecipe } from '~/composables/useRecipe'
 
 const { recipe, getRecipeById } = useRecipe()
 const route = useRoute()
