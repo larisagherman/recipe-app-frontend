@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type {Recommendation} from "~/types/Recommendation";
 
 const { loginWithGoogle, logout, isLoggedIn, user } = useAuth();
+
+const userName = computed(() => user.value?.name ?? 'User');
+const userId = computed(() => user.value?.firebaseId ?? null);
 
 const recommendations = ref<Recommendation[]>([])
 
@@ -37,6 +40,7 @@ const allIngredients = [
 <template>
   <div class="flex justify-between items-center p-2 border-b">
     <NuxtLink to="/recipes">See all recipes</NuxtLink>
+    <NuxtLink to="/history">See your history</NuxtLink>
 
     <button
         v-if="!isLoggedIn"
@@ -56,6 +60,10 @@ const allIngredients = [
     </div>
   </div>
 
+
+  <div v-if="isLoggedIn" class="text-sm text-gray-700">
+    Hello {{ userName }} (ID: {{ userId }})
+  </div>
 
   <!-- Rest of your page content -->
   <div class="flex flex-col items-center justify-center p-2">

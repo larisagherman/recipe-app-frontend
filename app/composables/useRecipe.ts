@@ -12,6 +12,7 @@ export const useRecipe = () => {
     const recommendations = ref<Recommendation[]>([]);
     const loading = ref<boolean>(false);
     const error = ref<string | null>(null);
+    const bakedRecipes = ref<Set<number>>(new Set());
     const pagination = ref<{
         totalPages: number;
         totalElements: number;
@@ -108,10 +109,83 @@ export const useRecipe = () => {
         }
     };
 
+    // Fetch user's baked recipes from backend
+    const fetchBakedRecipes = async () => {
+        try {
+            const { $user } = useNuxtApp();
+            if (!$user?.value?.userId) {
+                return; // User not logged in or userId not available
+            }
+            const userId = $user.value.id;
+            const data = await $fetch<Array<{ recipeId: number }>>(`${baseUrl}/user-recipe-logs/user/${userId}`);
+
+            // Extract recipe IDs and store in Set
+            bakedRecipes.value = new Set(data.map(log => log.recipeId));
+        } catch (e: unknown) {
+            console.error('Error fetching baked recipes:', e);
+        }
+    };
+
     // Initialize - fetch recipes on composable use
     if (recipes.value.length === 0) {
         fetchRecipes();
     }
+
+    // Initialize - fetch baked recipes on client side
+    if (process.client) {
+        fetchBakedRecipes();
+    }
+
+    // Toggle baked status for a recipe
+    const toggleBakedRecipe = async (recipeId: number) => {
+        const wasBaked = bakedRecipes.value.has(recipeId);
+        const { $user } = useNuxtApp();
+
+        if (!$user?.value?.userId) {
+            console.error('User not logged in or userId not available');
+            return;
+        }
+
+        const userId = $user.value.userId;
+
+        try {
+            if (wasBaked) {
+                // Remove from baked recipes - DELETE request
+                await $fetch(`${baseUrl}/user-recipe-logs/${userId}/${recipeId}`, {
+                    method: 'DELETE'
+                });
+                bakedRecipes.value.delete(recipeId);
+                console.log('Recipe removed from baked list');
+            } else {
+                // Add to baked recipes - POST request
+                await $fetch(`${baseUrl}/user-recipe-logs`, {
+                    method: 'POST',
+                    body: {
+                        userId: userId,
+                        recipeId: recipeId,
+                        rating: null,
+                        cookedAt: new Date().toISOString(),
+                        notes: null
+                    }
+                });
+                bakedRecipes.value.add(recipeId);
+                console.log('Recipe saved to backend successfully');
+            }
+        } catch (e: unknown) {
+            console.error('Error toggling recipe baked status:', e);
+            // Revert the change if the backend request fails
+            if (wasBaked) {
+                bakedRecipes.value.add(recipeId);
+            } else {
+                bakedRecipes.value.delete(recipeId);
+            }
+        }
+    };
+
+    // Check if a recipe is marked as baked
+    const isRecipeBaked = (recipeId: number) => {
+        return bakedRecipes.value.has(recipeId);
+    };
 
     return {
         // State
@@ -121,11 +195,15 @@ export const useRecipe = () => {
         loading,
         error,
         pagination,
+        bakedRecipes,
         // Methods
         fetchRecipes,
         getRecipeById,
         searchRecipes,
         getRecommendations,
+        toggleBakedRecipe,
+        isRecipeBaked,
+        fetchBakedRecipes,
     };
 };
 
