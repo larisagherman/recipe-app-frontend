@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { watch } from 'vue';
+import { useAuth } from '~/composables/useAuth';
+import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
+
 const { getUserRecipeLogs, logs } = useUserRecipeLogs();
-const {user}=useAuth();
+const { user } = useAuth();
+
 watch(
   () => user?.value?.id,
   async (id) => {
     if (!id) return;
-    await getUserRecipeLogs();
+    await getUserRecipeLogs(id);
     console.log('User ID:', id);
   },
   { immediate: true }

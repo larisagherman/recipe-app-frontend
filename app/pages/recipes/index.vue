@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { watchEffect } from "vue";
+import { useRecipe } from '~/composables/useRecipe';
+import { useAuth } from '~/composables/useAuth';
+import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
 
 const { recipes } = useRecipe();
 const { user } = useAuth();
@@ -7,12 +10,13 @@ const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog } = useUserRecipeL
 
 watchEffect(() => {
   if (user.value?.id) {
-    getUserRecipeLogs();
+    getUserRecipeLogs(user.value.id);
   }
 });
 
 const handleBakedClick = async (recipeId: number) => {
-  await toggleUserRecipeLog(recipeId);
+  if (!user.value?.id) return;
+  await toggleUserRecipeLog(user.value.id, recipeId);
 };
 </script>
 

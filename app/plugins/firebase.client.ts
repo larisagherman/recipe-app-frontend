@@ -6,6 +6,7 @@ import { ref } from "vue";
 import type {FirebaseUser} from "~/types/FirebaseUser";
 
 export default defineNuxtPlugin((nuxtApp) => {
+
     const config = useRuntimeConfig();
     const firebaseConfig = {
         apiKey: config.public.apiKey,
@@ -21,10 +22,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     const googleProvider = new GoogleAuthProvider();
     const baseUrl = config.public.apiBaseUrl || 'http://localhost:8080';
 
-    // Create a reactive user
-    const user =ref<FirebaseUser | null>(null);
+    // Create a reactive user ref
+    const user = ref<FirebaseUser | null>(null);
 
-    const syncUserFromFirebase = async (firebaseUser: { getIdToken: () => Promise<string>; displayName: string | null; email: string | null; photoURL: string | null } | null) => {
+    const syncUserFromFirebase = async (firebaseUser: { getIdToken: () => Promise<string>; displayName: string | null; email: string | null; photoURL: string | null; uid: string } | null) => {
         if (!firebaseUser) {
             user.value = null;
             return;

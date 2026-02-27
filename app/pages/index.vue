@@ -2,6 +2,8 @@
 import { ref, computed, watchEffect } from 'vue'
 import type { Recommendation } from "~/types/Recommendation";
 import type { FullRecipe } from "~/types/fullRecipe";
+import { useAuth } from '~/composables/useAuth';
+import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
 
 const { isLoggedIn, user } = useAuth();
 const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog } = useUserRecipeLogs();
@@ -55,12 +57,13 @@ const toFullRecipe = (recipe: Recommendation): FullRecipe => ({
 
 watchEffect(() => {
   if (user.value?.id) {
-    getUserRecipeLogs();
+    getUserRecipeLogs(user.value.id);
   }
-});
+})
 
 const handleBakedClick = async (recipeId: number) => {
-  await toggleUserRecipeLog(recipeId);
+  if (!user.value?.id) return;
+  await toggleUserRecipeLog(user.value.id, recipeId);
 };
 </script>
 <template>
