@@ -1,6 +1,6 @@
 import type { Auth, GoogleAuthProvider, User as FirebaseUserType } from "firebase/auth";
 import type { Ref } from "vue";
-import type { FirebaseUser } from "~/types/firebase";
+import type { FirebaseUser } from "~/types/FirebaseUser";
 
 declare module '#app' {
     interface NuxtApp {

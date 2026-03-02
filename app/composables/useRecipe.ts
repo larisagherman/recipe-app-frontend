@@ -12,6 +12,7 @@ export const useRecipe = () => {
     const recommendations = ref<Recommendation[]>([]);
     const loading = ref<boolean>(false);
     const error = ref<string | null>(null);
+    const bakedRecipes = ref<Set<number>>(new Set());
     const pagination = ref<{
         totalPages: number;
         totalElements: number;
@@ -108,10 +109,8 @@ export const useRecipe = () => {
         }
     };
 
-    // Initialize - fetch recipes on composable use
-    if (recipes.value.length === 0) {
-        fetchRecipes();
-    }
+
+
 
     return {
         // State
@@ -121,6 +120,7 @@ export const useRecipe = () => {
         loading,
         error,
         pagination,
+        bakedRecipes,
         // Methods
         fetchRecipes,
         getRecipeById,
