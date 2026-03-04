@@ -30,19 +30,43 @@ export const useRecipe = () => {
         loading.value = true;
         error.value = null;
         try {
-            const data = await $fetch<PaginatedRecipes>(`${baseUrl}/recipes/page`, { // <-- add /page
+            console.log('Fetching recipes from:', `${baseUrl}/recipes/page?page=${page}&size=${size}`);
+            const data = await $fetch<any>(`${baseUrl}/recipes/page`, {
                 params: { page, size },
             });
-            recipes.value = data.content;
-            pagination.value = {
-                totalPages: data.totalPages,
-                totalElements: data.totalElements,
-                currentPage: data.page, // Swagger uses "page" not "number"
-                size: data.size,
-            };
-        } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : 'Failed to fetch recipes';
+            console.log('Received data:', data);
+
+            // Handle different response structures
+            if (data && data.content) {
+                recipes.value = data.content;
+                pagination.value = {
+                    totalPages: data.totalPages || 0,
+                    totalElements: data.totalElements || 0,
+                    currentPage: data.page !== undefined ? data.page : (data.number || 0),
+                    size: data.size || size,
+                };
+            } else if (Array.isArray(data)) {
+                // If backend returns array directly
+                recipes.value = data;
+                pagination.value = {
+                    totalPages: 1,
+                    totalElements: data.length,
+                    currentPage: 0,
+                    size: data.length,
+                };
+            } else {
+                console.error('Unexpected response structure:', data);
+                error.value = 'Unexpected response structure from server';
+            }
+        } catch (e: any) {
             console.error('Error fetching recipes:', e);
+            error.value = e?.message || e?.data?.message || 'Failed to fetch recipes';
+
+            // Log more details about the error
+            if (e?.response) {
+                console.error('Response status:', e.response.status);
+                console.error('Response data:', e.response._data);
+            }
         } finally {
             loading.value = false;
         }
@@ -109,6 +133,46 @@ export const useRecipe = () => {
         }
     };
 
+    // Analyze image with Gemini
+    const analyzeImage = async (
+        file: File,
+        topK: number = 10,
+        forbiddenIngredients: string[] = [],
+        strict: boolean = false
+    ) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Build query params
+            const params: Record<string, any> = {
+                topK: topK,
+                strict: strict
+            };
+
+            // Only add forbiddenIngredients if not empty
+            if (forbiddenIngredients.length > 0) {
+                params.forbiddenIngredients = forbiddenIngredients;
+            }
+
+            const data = await $fetch<Recommendation[]>(`${baseUrl}/gemini/analyze`, {
+                method: 'POST',
+                body: formData,
+                params: params,
+            });
+            recommendations.value = data;
+            return data;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : 'Failed to analyze image';
+            console.error('Error analyzing image:', e);
+            return [];
+        } finally {
+            loading.value = false;
+        }
+    };
+
 
 
 
@@ -126,6 +190,7 @@ export const useRecipe = () => {
         getRecipeById,
         searchRecipes,
         getRecommendations,
+        analyzeImage,
     };
 };
 
