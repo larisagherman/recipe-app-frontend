@@ -1,11 +1,8 @@
 <script setup lang="ts">
-const { loginWithGoogle, logout, isLoggedIn, user } = useAuth();
+const { loginWithGoogle, isLoggedIn, user } = useAuth();
 </script>
 <template>
-  <div class="flex justify-between items-center p-2 border-b">
-    <NuxtLink to="/recipes">See all recipes</NuxtLink>
-    <NuxtLink to="/history">See your history</NuxtLink>
-
+  <div class="flex justify-end items-center p-4 bg-transparent backdrop-blur-sm">
     <button
         v-if="!isLoggedIn"
         @click="loginWithGoogle"
@@ -15,14 +12,25 @@ const { loginWithGoogle, logout, isLoggedIn, user } = useAuth();
       <span class="font-medium text-gray-700">Sign in with Google</span>
     </button>
 
-    <div v-else class="flex items-center gap-2">
-      <img :src="user.photoURL" class="w-6 h-6 rounded-full"/>
-      <span class="font-medium text-gray-700">{{ user.name }}</span>
-      <button @click="logout" class="bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 transition-all duration-150">
-        Log out
-      </button>
+    <div v-else class="flex items-center gap-3">
+      <NuxtLink
+        to="/profile"
+        class="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full border border-gray-200 hover:bg-gray-100 hover:shadow-md transition-all duration-150 cursor-pointer"
+      >
+        <img
+          v-if="user?.photoURL"
+          :src="user.photoURL"
+          :alt="user.name || 'User'"
+          class="w-8 h-8 rounded-full object-cover"
+        />
+        <div v-else class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+          {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
+        </div>
+        <div class="flex flex-col">
+          <span class="text-sm font-medium text-gray-800">{{ user?.name || 'User' }}</span>
+          <span class="text-xs text-gray-500">{{ user?.email }}</span>
+        </div>
+      </NuxtLink>
     </div>
   </div>
 </template>
-<script setup lang="ts">
-</script>

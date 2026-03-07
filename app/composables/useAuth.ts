@@ -15,28 +15,32 @@ export const useAuth = () => {
 
     const loginWithGoogle = async () => {
         if (!$auth || !$googleProvider) return;
-        try {
-            const result = await signInWithPopup($auth, $googleProvider);
-            const token = await result.user.getIdToken();
 
-            const supabaseUser = await $fetch<FirebaseUser>('http://localhost:8080/auth/firebase', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+        setTimeout(async () => {
+            try {
+                const result = await signInWithPopup($auth, $googleProvider);
+                const token = await result.user.getIdToken();
 
-            $user.value = {
-                id: supabaseUser.id,
-                firebaseId: result.user.uid,
-                name: result.user.displayName,
-                email: result.user.email,
-                photoURL: result.user.photoURL
-            } as FirebaseUser;
+                const supabaseUser = await $fetch<FirebaseUser>('http://localhost:8080/auth/firebase', {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
-            console.log("User logged in successfully:");
-            await router.push("/recipes");
-        } catch (error) {
-            console.error("Login failed:", error);
-        }
+                $user.value = {
+                    id: supabaseUser.id,
+                    firebaseId: result.user.uid,
+                    name: result.user.displayName,
+                    email: result.user.email,
+                    photoURL: result.user.photoURL
+                };
+
+                console.log("User logged in successfully");
+                await router.push("/");
+
+            } catch (error) {
+                console.error("Login failed:", error);
+            }
+        }, 100);
     };
 
     const logout = async () => {

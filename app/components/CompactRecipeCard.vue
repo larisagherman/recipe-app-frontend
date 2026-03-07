@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #d97706;
+  background: var(--color-primary-600);
   color: white;
   min-width: 32px;
   height: 32px;
@@ -192,12 +192,12 @@ onBeforeUnmount(() => {
   font-weight: 600;
   font-size: 0.875rem;
   z-index: 5;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .compact-recipe-card:hover {
-  border-color: #d97706;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+  border-color: var(--color-primary-600);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
@@ -281,20 +281,20 @@ onBeforeUnmount(() => {
 }
 
 .compact-baked-btn:hover {
-  border-color: #d97706;
-  color: #d97706;
-  background-color: #fef3c7;
+  border-color: var(--color-primary-600);
+  color: var(--color-primary-600);
+  background-color: var(--color-primary-50);
 }
 
 .compact-baked-btn.baked {
-  border-color: #d97706;
-  background-color: #d97706;
+  border-color: var(--color-primary-600);
+  background-color: var(--color-primary-600);
   color: white;
 }
 
 .compact-baked-btn.baked:hover {
-  background-color: #b45309;
-  border-color: #b45309;
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
 }
 
 .compact-baked-btn .icon {
@@ -313,7 +313,7 @@ onBeforeUnmount(() => {
   max-height: 80vh;
   overflow-y: auto;
   background: white;
-  border: 2px solid #d97706;
+  border: 2px solid var(--color-primary-600);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   z-index: 1000;
@@ -461,20 +461,20 @@ onBeforeUnmount(() => {
 }
 
 .baked-btn:hover {
-  border-color: #d97706;
-  color: #d97706;
-  background-color: #fef3c7;
+  border-color: var(--color-primary-600);
+  color: var(--color-primary-600);
+  background-color: var(--color-primary-50);
 }
 
 .baked-btn.baked {
-  border-color: #d97706;
-  background-color: #d97706;
+  border-color: var(--color-primary-600);
+  background-color: var(--color-primary-600);
   color: white;
 }
 
 .baked-btn.baked:hover {
-  background-color: #b45309;
-  border-color: #b45309;
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
 }
 
 .baked-btn .icon {

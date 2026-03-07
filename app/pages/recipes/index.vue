@@ -96,7 +96,7 @@ const handlePageChange = (newPage: number) => {
 
 .back-link {
   display: inline-block;
-  color: #d97706;
+  color: var(--color-primary-600);
   text-decoration: none;
   font-weight: 500;
   margin-bottom: 1rem;
@@ -104,7 +104,7 @@ const handlePageChange = (newPage: number) => {
 }
 
 .back-link:hover {
-  color: #b45309;
+  color: var(--color-primary-700);
 }
 
 .page-title {
@@ -163,7 +163,7 @@ const handlePageChange = (newPage: number) => {
   position: absolute;
   top: -10px;
   right: -10px;
-  background: #d97706;
+  background: var(--color-primary-600);
   color: white;
   min-width: 32px;
   height: 32px;
@@ -175,7 +175,7 @@ const handlePageChange = (newPage: number) => {
   font-weight: 600;
   font-size: 0.875rem;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .pagination-controls {
@@ -188,7 +188,7 @@ const handlePageChange = (newPage: number) => {
 
 .pagination-btn {
   padding: 0.75rem 1.5rem;
-  background: #d97706;
+  background: var(--color-primary-600);
   color: white;
   border: none;
   border-radius: 8px;
@@ -199,9 +199,9 @@ const handlePageChange = (newPage: number) => {
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #b45309;
+  background: var(--color-primary-700);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .pagination-btn:disabled {
