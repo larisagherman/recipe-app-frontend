@@ -13,7 +13,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <NuxtLink to="/" class="text-amber-700">Home</NuxtLink>
+    <NuxtLink to="/" class="text-primary-700">Home</NuxtLink>
     <h1>Recipes</h1>
 
     <div v-if="recipe"  class="recipe-card">

@@ -14,7 +14,18 @@ export default defineNuxtConfig({
 
       // Public variables (also available client-side)
       public: {
-        apiKey: process.env.API_KEY
+        apiKey: process.env.API_KEY,
+        apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
       }
-    }
+  },
+  ui: {
+    safelistColors:['brand'],
+      colorMode: false,
+      theme: {
+            colors: [
+              'primary',
+              'rose',
+            ]
+          }
+  }
 })
