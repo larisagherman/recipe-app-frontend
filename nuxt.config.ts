@@ -24,7 +24,7 @@ export default defineNuxtConfig({
       theme: {
             colors: [
               'primary',
-              'rose',
+              'brand',
             ]
           }
   }

@@ -54,9 +54,9 @@ const setActiveTab = (tab: string) => {
               <p class="text-gray-600">{{ user?.email }}</p>
             </div>
           </div>
-          <AppButton variant="danger" @click="logout">
+          <button  @click="logout" class="underline cursor-pointer">
             Log out
-          </AppButton>
+          </button>
         </div>
       </div>
 

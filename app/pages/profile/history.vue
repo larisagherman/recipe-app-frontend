@@ -134,7 +134,7 @@ watch(
 
       <!-- Empty State -->
       <div v-else-if="!logs.length" class="text-center py-16">
-        <div class="text-6xl mb-4">🍳</div>
+        <div class="text-6xl mb-4">🍰</div>
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">No recipes cooked yet</h2>
         <p class="text-gray-600 mb-6">Start cooking and your history will appear here!</p>
         <NuxtLink
@@ -163,8 +163,9 @@ watch(
                   :alt="recipesMap.get(log.recipeId)?.name"
                   class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
-                <div v-else class="w-full h-full flex items-center justify-center">
-                  <span class="text-6xl">🍽️</span>
+                <div v-else class="w-full h-full flex flex-col items-center justify-center gap-2 p-4">
+                  <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" alt="Cupcake" class="w-20 h-20" />
+                  <p class="text-sm text-gray-500 text-center">Image not found</p>
                 </div>
               </NuxtLink>
             </div>
