@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import type { FullRecipe } from "~/types/fullRecipe";
 
 const props = defineProps<{
@@ -24,20 +24,28 @@ const handleEscape = (e: KeyboardEvent) => {
   }
 };
 
+// Prevent body scroll when modal is open
+watch(isOpen, (newValue) => {
+  if (newValue) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+});
+
 onMounted(() => {
   window.addEventListener('keydown', handleEscape);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEscape);
+  document.body.style.overflow = '';
 });
 </script>
 
 <template>
   <div class="compact-card-wrapper">
-    <!-- Backdrop -->
-    <div v-if="isOpen" class="backdrop" @click="isOpen = false"></div>
-
+    <!-- Compact Card Preview -->
     <div
       class="compact-recipe-card"
       @click="isOpen = true"
@@ -73,67 +81,74 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <!-- Modal Card -->
-    <div v-if="isOpen" class="hover-card" @click.stop>
-      <div class="hover-card-header">
-        <h2>{{ recipe.name }}</h2>
-        <div class="header-actions">
-          <button
-            @click.stop.prevent="handleToggle"
-            :class="['baked-btn', { baked: isBaked }]"
-            :title="isBaked ? 'Mark as not baked' : 'Mark as baked'"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="icon"
-            >
-              <path
-                d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.003-.003.001a.752.752 0 01-.704 0l-.003-.001z"
-              />
-            </svg>
-            <span class="baked-text">{{ isBaked ? "Baked!" : "Mark as Baked" }}</span>
-          </button>
-          <button
-            @click.stop.prevent="isOpen = false"
-            class="close-btn"
-            title="Close"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="icon"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-      <NuxtLink :to="`/recipes/${recipe.id}`">
-        <div v-if="!recipe.imgSrc" class="placeholder-image-large">
-          <div class="placeholder-content">
-            <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" alt="Cupcake" class="placeholder-icon-large" />
-            <p class="placeholder-text-large">Image not found</p>
+    <!-- Modal Overlay (Backdrop + Card) -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="isOpen" class="modal-overlay" @click="isOpen = false">
+          <!-- Modal Card -->
+          <div class="hover-card" @click.stop>
+            <div class="hover-card-header">
+              <h2>{{ recipe.name }}</h2>
+              <div class="header-actions">
+                <button
+                  @click.stop.prevent="handleToggle"
+                  :class="['baked-btn', { baked: isBaked }]"
+                  :title="isBaked ? 'Mark as not baked' : 'Mark as baked'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="icon"
+                  >
+                    <path
+                      d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.003-.003.001a.752.752 0 01-.704 0l-.003-.001z"
+                    />
+                  </svg>
+                  <span class="baked-text">{{ isBaked ? "Baked!" : "Mark as Baked" }}</span>
+                </button>
+                <button
+                  @click.stop.prevent="isOpen = false"
+                  class="close-btn"
+                  title="Close"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="icon"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <NuxtLink :to="`/recipes/${recipe.id}`">
+              <div v-if="!recipe.imgSrc" class="placeholder-image-large">
+                <div class="placeholder-content">
+                  <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" alt="Cupcake" class="placeholder-icon-large" />
+                  <p class="placeholder-text-large">Image not found</p>
+                </div>
+              </div>
+              <img v-else :src="recipe.imgSrc" :alt="recipe.name" class="hover-img" />
+            </NuxtLink>
+            <div class="hover-details">
+              <p v-if="recipe.prepTime || recipe.cookTime">
+                <strong>Prep Time:</strong> {{ recipe.prepTime }} |
+                <strong>Cook Time:</strong> {{ recipe.cookTime }}
+              </p>
+              <p v-if="recipe.servings"><strong>Servings:</strong> {{ recipe.servings }}</p>
+              <h3 v-if="recipe.ingredients">Ingredients:</h3>
+              <pre v-if="recipe.ingredients" class="ingredients-text">{{ recipe.ingredients }}</pre>
+            </div>
           </div>
         </div>
-        <img v-else :src="recipe.imgSrc" :alt="recipe.name" class="hover-img" />
-      </NuxtLink>
-      <div class="hover-details">
-        <p v-if="recipe.prepTime || recipe.cookTime">
-          <strong>Prep Time:</strong> {{ recipe.prepTime }} |
-          <strong>Cook Time:</strong> {{ recipe.cookTime }}
-        </p>
-        <p v-if="recipe.servings"><strong>Servings:</strong> {{ recipe.servings }}</p>
-        <h3 v-if="recipe.ingredients">Ingredients:</h3>
-        <pre v-if="recipe.ingredients" class="ingredients-text">{{ recipe.ingredients }}</pre>
-      </div>
-    </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -142,24 +157,44 @@ onBeforeUnmount(() => {
   position: relative;
 }
 
-.backdrop {
+/* Modal Overlay (Backdrop) */
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  animation: fadeInBackdrop 0.2s ease;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  cursor: pointer;
+  overflow-y: auto;
 }
 
-@keyframes fadeInBackdrop {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* Transition animations */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-active .hover-card,
+.modal-leave-active .hover-card {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .hover-card,
+.modal-leave-to .hover-card {
+  transform: scale(0.9);
+  opacity: 0;
 }
 
 .compact-recipe-card {
@@ -302,33 +337,18 @@ onBeforeUnmount(() => {
   height: 1rem;
 }
 
-/* Hover Card */
+/* Hover Card Modal */
 .hover-card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  max-width: 90vw;
-  max-height: 80vh;
+  position: relative;
+  width: 700px;
+  max-width: 95vw;
+  max-height: 90vh;
   overflow-y: auto;
   background: white;
-  border: 2px solid var(--color-primary-600);
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  cursor: default;
 }
 
 .hover-card-header {
@@ -484,6 +504,37 @@ onBeforeUnmount(() => {
 
 .baked-text {
   white-space: nowrap;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .hover-card {
+    width: 95vw;
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+
+  .hover-card-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .hover-img,
+  .placeholder-image-large {
+    height: 250px;
+  }
+
+  .hover-details {
+    padding: 1rem;
+  }
+
+  .baked-text {
+    display: none;
+  }
+
+  .baked-btn {
+    padding: 0.5rem;
+    min-width: 36px;
+  }
 }
 </style>
 

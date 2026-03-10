@@ -1,16 +1,39 @@
 <script setup lang="ts">
-import { watch, ref, computed } from 'vue';
+import { watch, ref, computed, onMounted } from 'vue';
 import { useAuth } from '~/composables/useAuth';
 import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
 import { useRecipe } from '~/composables/useRecipe';
 import type { FullRecipe } from '~/types/fullRecipe';
 
 const { getUserRecipeLogs, logs, loading } = useUserRecipeLogs();
-const { user } = useAuth();
+const { user, isLoggedIn } = useAuth();
 const { getRecipeById } = useRecipe();
+const router = useRouter();
 
 const recipesMap = ref<Map<number, FullRecipe>>(new Map());
 const loadingRecipes = ref(false);
+const authChecked = ref(false);
+
+// Wait for auth state to be checked before redirecting
+onMounted(() => {
+  // Give Firebase time to restore the auth state
+  const timeout = setTimeout(() => {
+    authChecked.value = true;
+    if (!isLoggedIn.value) {
+      router.push('/');
+    }
+  }, 1000); // Wait 1 second for auth to load
+
+  // Also watch for auth changes
+  let stopWatch: (() => void) | null = null;
+  stopWatch = watch(user, (newUser) => {
+    if (newUser) {
+      authChecked.value = true;
+      clearTimeout(timeout);
+      if (stopWatch) stopWatch();
+    }
+  }, { immediate: true });
+});
 
 // Fetch recipe details for each log
 const fetchRecipeDetails = async () => {
@@ -71,7 +94,16 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-screen p-6">
+  <!-- Loading state while checking auth -->
+  <div v-if="!authChecked" class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+      <p class="text-gray-600">Loading...</p>
+    </div>
+  </div>
+
+  <!-- History content once auth is checked -->
+  <div v-else class="min-h-screen p-6">
     <div class="max-w-6xl mx-auto">
       <!-- Header -->
       <div class="mb-8">

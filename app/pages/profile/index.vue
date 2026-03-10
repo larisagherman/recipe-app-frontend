@@ -1,14 +1,29 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const { user, isLoggedIn, logout } = useAuth();
 const router = useRouter();
+const authChecked = ref(false);
 
-// Redirect to login if not authenticated
+// Wait for auth state to be checked before redirecting
 onMounted(() => {
-  if (!isLoggedIn.value) {
-    router.push('/auth');
-  }
+  // Give Firebase time to restore the auth state
+  const timeout = setTimeout(() => {
+    authChecked.value = true;
+    if (!isLoggedIn.value) {
+      router.push('/');
+    }
+  }, 1000); // Wait 1 second for auth to load
+
+  // Also watch for auth changes
+  let stopWatch: (() => void) | null = null;
+  stopWatch = watch(user, (newUser) => {
+    if (newUser) {
+      authChecked.value = true;
+      clearTimeout(timeout);
+      if (stopWatch) stopWatch();
+    }
+  }, { immediate: true });
 });
 
 const activeTab = ref('history');
@@ -19,7 +34,16 @@ const setActiveTab = (tab: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen ">
+  <!-- Loading state while checking auth -->
+  <div v-if="!authChecked" class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+      <p class="text-gray-600">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Profile content once auth is checked -->
+  <div v-else class="min-h-screen ">
     <div class="max-w-6xl mx-auto p-6">
       <!-- Profile Header -->
       <div class="bg-white rounded-lg shadow-md p-6 mb-6">

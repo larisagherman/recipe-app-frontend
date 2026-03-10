@@ -2,7 +2,16 @@
 const { loginWithGoogle, isLoggedIn, user } = useAuth();
 </script>
 <template>
-  <div class="flex justify-end items-center p-4 bg-transparent backdrop-blur-sm">
+  <div class="flex justify-between items-center p-4 bg-transparent backdrop-blur-sm">
+    <!-- Home Link -->
+    <NuxtLink
+      to="/"
+      class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group"
+    >
+      <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Home</span>
+    </NuxtLink>
+
+    <!-- Auth Section -->
     <button
         v-if="!isLoggedIn"
         @click="loginWithGoogle"
