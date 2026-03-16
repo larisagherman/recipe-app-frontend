@@ -72,7 +72,18 @@ const setActiveTab = (tab: string) => {
                 : 'text-gray-600 hover:bg-gray-50'
             ]"
           >
-             Recipe History
+             Baking History
+          </button>
+          <button
+              @click="setActiveTab('saved')"
+              :class="[
+              'flex-1 py-4 px-6 text-center font-semibold transition-all duration-150',
+              activeTab === 'saved'
+                ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+                : 'text-gray-600 hover:bg-gray-50'
+            ]"
+          >
+            ️ Saved Recipes
           </button>
           <button
             @click="setActiveTab('preferences')"
@@ -85,17 +96,7 @@ const setActiveTab = (tab: string) => {
           >
              Preferences
           </button>
-          <button
-            @click="setActiveTab('favorites')"
-            :class="[
-              'flex-1 py-4 px-6 text-center font-semibold transition-all duration-150',
-              activeTab === 'favorites'
-                ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
-                : 'text-gray-600 hover:bg-gray-50'
-            ]"
-          >
-            ️ Favorites
-          </button>
+
         </div>
       </div>
 
@@ -104,103 +105,42 @@ const setActiveTab = (tab: string) => {
         <!-- Recipe History Tab -->
         <div v-if="activeTab === 'history'">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Recipe History</h2>
-          <NuxtLink
-            to="/profile/history"
-            class="inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
-          >
-            View Full History →
-          </NuxtLink>
           <p class="text-gray-600 mt-4">
             See all the recipes you've viewed, searched for, and cooked. Track your culinary journey!
           </p>
+          <NuxtLink
+            to="/profile/history"
+            class="inline-flex items-center justify-center gap-2 mt-4 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
+          >
+            View Full History →
+          </NuxtLink>
+
         </div>
 
         <!-- Preferences Tab -->
         <div v-if="activeTab === 'preferences'">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Preferences</h2>
-          <div class="space-y-6">
-            <!-- Dietary Restrictions -->
-            <div>
-              <h3 class="text-lg font-semibold text-gray-700 mb-2">Dietary Restrictions</h3>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Vegetarian</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Vegan</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Gluten-Free</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Dairy-Free</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Forbidden Ingredients -->
-            <div>
-              <h3 class="text-lg font-semibold text-gray-700 mb-2">Forbidden Ingredients</h3>
-              <textarea
-                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                rows="3"
-                placeholder="Enter ingredients you want to avoid (e.g., peanuts, shellfish, mushrooms)..."
-              ></textarea>
-              <p class="text-sm text-gray-500 mt-1">Separate multiple ingredients with commas</p>
-            </div>
-
-            <!-- Preferred Cuisines -->
-            <div>
-              <h3 class="text-lg font-semibold text-gray-700 mb-2">Preferred Cuisines</h3>
-              <div class="grid grid-cols-2 gap-2">
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Italian</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Chinese</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Mexican</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Indian</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Japanese</span>
-                </label>
-                <label class="flex items-center gap-2">
-                  <input type="checkbox" class="w-5 h-5 text-primary-600 rounded">
-                  <span class="text-gray-700">Mediterranean</span>
-                </label>
-              </div>
-            </div>
-
-            <AppButton>
-              💾 Save Preferences
-            </AppButton>
-          </div>
+          <p class="text-gray-600 mt-4">
+            Set your prefered life style now!
+          </p>
+          <NuxtLink
+              to="/profile/history"
+              class="inline-flex items-center justify-center gap-2 mt-4 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
+          >            Update Preferences →
+          </NuxtLink >
         </div>
 
         <!-- Favorites Tab -->
-        <div v-if="activeTab === 'favorites'">
+        <div v-if="activeTab === 'saved'">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Favorite Recipes</h2>
           <p class="text-gray-600">
             Your saved favorite recipes will appear here. Start exploring and save recipes you love!
           </p>
           <NuxtLink
-            to="/recipes"
+            to="/profile"
             class="inline-flex items-center justify-center gap-2 mt-4 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
           >
-            Browse Recipes →
+            View Saved Recipes →
           </NuxtLink>
         </div>
       </div>

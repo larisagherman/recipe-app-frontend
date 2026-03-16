@@ -220,22 +220,6 @@ watch(
                 <p class="text-sm text-amber-800">{{ log.notes }}</p>
               </div>
 
-              <!-- Action Buttons -->
-              <div class="flex gap-3">
-                <NuxtLink
-                  :to="`/recipes/${log.recipeId}`"
-                  class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
-                >
-                  <span>View Recipe</span>
-                  <span>→</span>
-                </NuxtLink>
-                <button
-                  class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
-                >
-                  <span>❤️</span>
-                  <span>Add to Favorites</span>
-                </button>
-              </div>
             </div>
           </div>
         </div>

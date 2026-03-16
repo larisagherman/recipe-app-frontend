@@ -7,7 +7,7 @@ import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
 import { useRecipe } from '~/composables/useRecipe';
 
 const { user } = useAuth();
-const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog } = useUserRecipeLogs();
+const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs();
 const { analyzeImage, loading } = useRecipe();
 
 const recommendations = ref<Recommendation[]>([])
@@ -21,6 +21,10 @@ const getRecommendation = async () => {
       .split(/[\n,]/)       // split by comma or new line
       .map(i => i.trim())
       .filter(i => i.length > 0)
+  if (parsedQuery.length === 0) {
+    alert("Please enter at least one ingredient")
+    return
+  }
   recommendations.value=await $fetch('http://localhost:8080/recommend',
       {
         method:'POST',
@@ -74,12 +78,18 @@ const toFullRecipe = (recipe: Recommendation): FullRecipe => ({
 watchEffect(() => {
   if (user.value?.id) {
     getUserRecipeLogs(user.value.id);
+    getSavedRecipeLogs(user.value.id);
   }
 })
 
 const handleBakedClick = async (recipeId: number) => {
   if (!user.value?.id) return;
   await toggleUserRecipeLog(user.value.id, recipeId);
+};
+
+const handleSavedClick = async (recipeId: number) => {
+  if (!user.value?.id) return;
+  await toggleSavedRecipeLog(user.value.id, recipeId);
 };
 </script>
 <template>
@@ -252,8 +262,10 @@ const handleBakedClick = async (recipeId: number) => {
             <CompactRecipeCard
               :recipe="toFullRecipe(recipe)"
               :is-baked="isRecipeBaked(recipe.id)"
+              :is-saved="isRecipeSaved(recipe.id)"
               :recipe-number="index + 1"
               @toggle-baked="handleBakedClick"
+              @toggle-saved="handleSavedClick"
             />
 
             <div v-if="strictMode && (recipe.missing_count || recipe.missing_ingredients?.length)" class="missing-info">

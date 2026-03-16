@@ -6,7 +6,7 @@ const { loginWithGoogle, isLoggedIn, user } = useAuth();
     <!-- Home Link -->
     <NuxtLink
       to="/"
-      class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group"
+      class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group"
     >
       <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Home</span>
     </NuxtLink>

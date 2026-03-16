@@ -5,17 +5,23 @@ import type { FullRecipe } from "~/types/fullRecipe";
 const props = defineProps<{
   recipe: FullRecipe;
   isBaked: boolean;
+  isSaved?: boolean;
   recipeNumber?: number;
 }>();
 
 const emit = defineEmits<{
   (event: "toggle-baked", recipeId: number): void;
+  (event: "toggle-saved", recipeId: number): void;
 }>();
 
 const isOpen = ref(false);
 
 const handleToggle = () => {
   emit("toggle-baked", props.recipe.id);
+};
+
+const handleToggleSave = () => {
+  emit("toggle-saved", props.recipe.id);
 };
 
 const handleEscape = (e: KeyboardEvent) => {
@@ -45,12 +51,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="compact-card-wrapper">
+
     <!-- Compact Card Preview -->
     <div
       class="compact-recipe-card"
       @click="isOpen = true"
     >
-      <div v-if="recipeNumber" class="recipe-number">{{ recipeNumber }}</div>
       <div class="compact-card-content">
         <div v-if="!recipe.imgSrc" class="placeholder-image">
           <div class="placeholder-content">
@@ -59,24 +65,31 @@ onBeforeUnmount(() => {
           </div>
         </div>
         <img v-else :src="recipe.imgSrc" :alt="recipe.name" class="compact-img" />
+        <div v-if="recipeNumber" class="recipe-number">{{ recipeNumber }}</div>
+
         <div class="compact-info">
           <h3 class="compact-title">{{ recipe.name }}</h3>
-          <button
-            @click.stop.prevent="handleToggle"
-            :class="['compact-baked-btn', { baked: isBaked }]"
-            :title="isBaked ? 'Mark as not baked' : 'Mark as baked'"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="icon"
+          <div class="compact-actions">
+            <button
+                @click.stop.prevent="handleToggle"
+                :class="['compact-icon-btn', { baked: props.isBaked }]"
+                :title="props.isBaked ? 'Mark as not baked' : 'Mark as baked'"
             >
-              <path
-                d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.003-.003.001a.752.752 0 01-.704 0l-.003-.001z"
-              />
-            </svg>
-          </button>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+              </svg>
+            </button>
+            <button
+              @click.stop.prevent="handleToggleSave"
+              :class="['compact-icon-btn', { saved: props.isSaved }]"
+              :title="props.isSaved ? 'Remove from saved' : 'Save recipe'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+              </svg>
+            </button>
+
+          </div>
         </div>
       </div>
     </div>
@@ -90,6 +103,7 @@ onBeforeUnmount(() => {
             <div class="hover-card-header">
               <h2>{{ recipe.name }}</h2>
               <div class="header-actions">
+
                 <button
                   @click.stop.prevent="handleToggle"
                   :class="['baked-btn', { baked: isBaked }]"
@@ -106,6 +120,16 @@ onBeforeUnmount(() => {
                     />
                   </svg>
                   <span class="baked-text">{{ isBaked ? "Baked!" : "Mark as Baked" }}</span>
+                </button>
+                <button
+                    @click.stop.prevent="handleToggleSave"
+                    :class="['action-btn', { saved: props.isSaved }]"
+                    :title="props.isSaved ? 'Remove from saved' : 'Save recipe'"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                    <path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                  </svg>
+                  <span class="action-text">{{ props.isSaved ? "Saved" : "Save" }}</span>
                 </button>
                 <button
                   @click.stop.prevent="isOpen = false"
@@ -214,7 +238,7 @@ onBeforeUnmount(() => {
 .recipe-number {
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 8px;
   background: var(--color-primary-600);
   color: white;
   min-width: 32px;
@@ -281,8 +305,8 @@ onBeforeUnmount(() => {
   padding: 0.75rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-end;
+  gap: 0.75rem;
   flex: 1;
 }
 
@@ -297,9 +321,16 @@ onBeforeUnmount(() => {
   line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.3;
+  flex: 1;
 }
 
-.compact-baked-btn {
+.compact-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.compact-icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -315,24 +346,35 @@ onBeforeUnmount(() => {
   height: 36px;
 }
 
-.compact-baked-btn:hover {
+.compact-icon-btn:hover {
   border-color: var(--color-primary-600);
   color: var(--color-primary-600);
   background-color: var(--color-primary-50);
 }
 
-.compact-baked-btn.baked {
+.compact-icon-btn.baked {
   border-color: var(--color-primary-600);
   background-color: var(--color-primary-600);
   color: white;
 }
 
-.compact-baked-btn.baked:hover {
+.compact-icon-btn.baked:hover {
   background-color: var(--color-primary-700);
   border-color: var(--color-primary-700);
 }
 
-.compact-baked-btn .icon {
+.compact-icon-btn.saved {
+  border-color: var(--color-primary-600);
+  background-color: var(--color-primary-600);
+  color: white;
+}
+
+.compact-icon-btn.saved:hover {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+}
+
+.compact-icon-btn svg {
   width: 1rem;
   height: 1rem;
 }
@@ -371,6 +413,47 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.action-btn:hover {
+  border-color: var(--color-primary-600);
+  color: var(--color-primary-600);
+  background-color: var(--color-primary-50);
+}
+
+.action-btn.saved {
+  border-color: var(--color-primary-600);
+  background-color: var(--color-primary-600);
+  color: white;
+}
+
+.action-btn.saved:hover {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+}
+
+.action-text {
+  white-space: nowrap;
+}
+
+.action-btn .icon {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .close-btn {

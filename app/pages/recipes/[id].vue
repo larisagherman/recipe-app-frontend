@@ -6,7 +6,7 @@ import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs'
 
 const { recipe, getRecipeById } = useRecipe()
 const { user } = useAuth()
-const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog } = useUserRecipeLogs()
+const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs()
 const route = useRoute()
 const recipeId = Number(route.params.id)
 
@@ -14,6 +14,7 @@ onMounted(() => {
   getRecipeById(recipeId)
   if (user.value?.id) {
     getUserRecipeLogs(user.value.id)
+    getSavedRecipeLogs(user.value.id)
   }
 })
 
@@ -22,7 +23,13 @@ const handleBakedToggle = async () => {
   await toggleUserRecipeLog(user.value.id, recipeId)
 }
 
+const handleSavedToggle = async () => {
+  if (!user.value?.id) return
+  await toggleSavedRecipeLog(user.value.id, recipeId)
+}
+
 const isBaked = computed(() => isRecipeBaked(recipeId))
+const isSaved = computed(() => isRecipeSaved(recipeId))
 
 const ingredientsList = computed(() => {
   if (!recipe.value?.ingredients) return []
@@ -88,22 +95,41 @@ const directionsList = computed(() => {
             </h1>
           </div>
 
-          <!-- Baked Button - Top Right -->
-          <button
-            v-if="user"
-            @click="handleBakedToggle"
-            :class="[
-              'absolute top-6 right-6 flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg',
-              isBaked
-                ? 'bg-orange-600 text-white hover:bg-orange-700'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            ]"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-              <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.003-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-            </svg>
-            <span>{{ isBaked ? 'Baked!' : 'Mark as Baked' }}</span>
-          </button>
+          <!-- Baked and Save Buttons - Top Right -->
+          <div v-if="user" class="absolute top-6 right-6 flex gap-3">
+            <!-- Baked Button -->
+            <button
+                @click="handleBakedToggle"
+                :class="[
+                'flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg',
+                isBaked
+                  ? 'bg-orange-600 text-white hover:bg-orange-700'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              ]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.003-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+              </svg>
+              <span>{{ isBaked ? 'Baked!' : 'Mark as Baked' }}</span>
+            </button>
+            <!-- Save Button -->
+            <button
+              @click="handleSavedToggle"
+              :class="[
+                'flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg',
+                isSaved
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              ]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                <path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+              </svg>
+              <span>{{ isSaved ? 'Saved!' : 'Mark as Save' }}</span>
+            </button>
+
+
+          </div>
         </div>
 
         <!-- Recipe Info Grid -->

@@ -42,6 +42,7 @@ const handleToggle = () => {
         <span class="baked-text">{{ isBaked ? "Baked!" : "Mark as Baked" }}</span>
       </button>
     </div>
+
     <img v-if="recipe.imgSrc" :src="recipe.imgSrc" :alt="recipe.name" />
     <p v-if="hasTimes">
       <strong>Prep Time:</strong> {{ recipe.prepTime }} |

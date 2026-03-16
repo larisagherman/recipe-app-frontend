@@ -6,7 +6,7 @@ import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
 
 const { recipes, fetchRecipes, loading, error, pagination } = useRecipe();
 const { user } = useAuth();
-const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog } = useUserRecipeLogs();
+const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs();
 
 // Fetch recipes on mount
 onMounted(() => {
@@ -16,12 +16,17 @@ onMounted(() => {
 watchEffect(() => {
   if (user.value?.id) {
     getUserRecipeLogs(user.value.id);
+    getSavedRecipeLogs(user.value.id);
   }
 });
 
 const handleBakedClick = async (recipeId: number) => {
   if (!user.value?.id) return;
   await toggleUserRecipeLog(user.value.id, recipeId);
+};
+const handleSavedClick = async (recipeId: number) => {
+  if (!user.value?.id) return;
+  await toggleSavedRecipeLog(user.value.id, recipeId);
 };
 
 const handlePageChange = (newPage: number) => {
@@ -51,7 +56,9 @@ const handlePageChange = (newPage: number) => {
           <CompactRecipeCard
             :recipe="recipe"
             :is-baked="isRecipeBaked(recipe.id)"
+            :is-saved="isRecipeSaved(recipe.id)"
             @toggle-baked="handleBakedClick"
+            @toggle-saved="handleSavedClick"
           />
         </div>
       </div>
@@ -161,8 +168,8 @@ const handlePageChange = (newPage: number) => {
 
 .recipe-number {
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: 8px;
+  left: 8px;
   background: var(--color-primary-600);
   color: white;
   min-width: 32px;
