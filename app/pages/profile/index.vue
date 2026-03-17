@@ -124,7 +124,7 @@ const setActiveTab = (tab: string) => {
             Set your prefered life style now!
           </p>
           <NuxtLink
-              to="/profile/history"
+              to="/profile/preferences"
               class="inline-flex items-center justify-center gap-2 mt-4 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
           >            Update Preferences →
           </NuxtLink >
@@ -137,7 +137,7 @@ const setActiveTab = (tab: string) => {
             Your saved favorite recipes will appear here. Start exploring and save recipes you love!
           </p>
           <NuxtLink
-            to="/profile"
+            to="/profile/savedRecipes"
             class="inline-flex items-center justify-center gap-2 mt-4 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
           >
             View Saved Recipes →
