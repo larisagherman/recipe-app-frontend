@@ -4,12 +4,19 @@ const { loginWithGoogle, isLoggedIn, user } = useAuth();
 <template>
   <div class="flex justify-between items-center p-4 bg-transparent backdrop-blur-sm">
     <!-- Home Link -->
-    <NuxtLink
-      to="/"
-      class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group"
-    >
-      <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Home</span>
-    </NuxtLink>
+    <div class="flex ml-8 gap-4">
+      <NuxtLink
+          to="/"
+          class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group"
+      >
+        <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Home</span>
+      </NuxtLink>
+      <NuxtLink to="/recipes"
+                class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group">
+
+        <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Recipes</span>
+      </NuxtLink>
+    </div>
 
     <!-- Auth Section -->
     <button
@@ -41,5 +48,6 @@ const { loginWithGoogle, isLoggedIn, user } = useAuth();
         </div>
       </NuxtLink>
     </div>
+
   </div>
 </template>

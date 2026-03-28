@@ -14,10 +14,11 @@ export interface UserPreferences {
   dislikedIngredients: string[];
 
   // Taste Preferences
-  sweetnessLevel: 'notsweet' | 'mildlysweet' | 'medium' | 'verysweet' | null;
-  flavourProfiles: string[]; // chocolatey, fruity, nutty, spiced, citrusy, vanilla, savory
+  tastePreferences: 'notsweet' | 'mildlysweet' | 'medium' | 'verysweet' | null;
+  flavourPreferences: string[]; // chocolatey, fruity, nutty, spiced, citrusy, vanilla, savory
 
   createdAt?: string;
+
   updatedAt?: string;
 }
 
@@ -50,7 +51,7 @@ export const DISLIKED_INGREDIENTS = [
   'Artificial sweeteners'
 ];
 
-export const FLAVOR_PROFILES = [
+export const FLAVOR_PREFERENCES = [
   'Chocolatey',
   'Fruity',
   'Nutty',
@@ -60,7 +61,7 @@ export const FLAVOR_PROFILES = [
   'Savory baking'
 ];
 
-export const SWEETNESS_LEVELS = [
+export const TASTE_PREFERENCES = [
   { value: 'notsweet', label: 'Not sweet' },
   { value: 'mildlysweet', label: 'Mildly sweet' },
   { value: 'medium', label: 'Medium' },

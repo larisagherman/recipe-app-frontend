@@ -38,7 +38,7 @@ const userName = computed(() => user.value?.name ?? 'Guest');
               Enter your available ingredients or upload a photo to discover recipes you can make right now
             </p>
             <div class="inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150 shadow-sm group-hover:shadow-md bg-primary-600 text-white group-hover:bg-primary-700 px-6 py-3">
-              Start Cooking
+              Start Baking
               <span class="transform group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </div>

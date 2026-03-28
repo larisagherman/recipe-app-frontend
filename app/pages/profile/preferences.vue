@@ -6,13 +6,13 @@ import {
   DIETARY_TYPES,
   ALLERGIES,
   DISLIKED_INGREDIENTS,
-  FLAVOR_PROFILES,
-  SWEETNESS_LEVELS
+  FLAVOR_PREFERENCES,
+  TASTE_PREFERENCES
 } from '~/types/userPreferences';
 import type { UserPreferences } from '~/types/userPreferences';
 
 const { user, isLoggedIn } = useAuth();
-const { preferences, loading, error, fetchPreferences, savePreferences } = usePreferences();
+const { preferences, loading, error, fetchPreferences, savePreferences,updatePreferences } = usePreferences();
 const router = useRouter();
 
 const authChecked = ref(false);
@@ -26,8 +26,8 @@ const formData = ref<Partial<UserPreferences>>({
   allergies: [],
   severeAllergies: [],
   dislikedIngredients: [],
-  sweetnessLevel: null,
-  flavourProfiles: []
+  tastePreferences: null,
+  flavourPreferences: []
 });
 
 const customDisliked = ref('');
@@ -107,12 +107,12 @@ const toggleSevereAllergy = (allergy: string) => {
 };
 
 const toggleFlavourProfile = (profile: string) => {
-  if (!formData.value.flavourProfiles) formData.value.flavourProfiles = [];
-  const index = formData.value.flavourProfiles.indexOf(profile);
+  if (!formData.value.flavourPreferences) formData.value.flavourPreferences = [];
+  const index = formData.value.flavourPreferences.indexOf(profile);
   if (index > -1) {
-    formData.value.flavourProfiles.splice(index, 1);
+    formData.value.flavourPreferences.splice(index, 1);
   } else {
-    formData.value.flavourProfiles.push(profile);
+    formData.value.flavourPreferences.push(profile);
   }
 };
 
@@ -137,34 +137,67 @@ const removeDisliked = (ingredient: string) => {
 
 const handleSubmit = async () => {
   if (!user.value?.id) return;
+  if(preferences.value){
+    saving.value = true;
+    saveSuccess.value = false;
+    try {
+      const preferencesToSave: UserPreferences = {
+        userId: user.value.id,
+        dietaryTypes: formData.value.dietaryTypes || [],
+        dietaryStrict: formData.value.dietaryStrict || false,
+        allergies: formData.value.allergies || [],
+        severeAllergies: formData.value.severeAllergies || [],
+        dislikedIngredients: formData.value.dislikedIngredients || [],
+        tastePreferences: formData.value.tastePreferences || null,
+        flavourPreferences: formData.value.flavourPreferences || [],
+        updatedAt: new Date().toISOString()
+      };
 
-  saving.value = true;
-  saveSuccess.value = false;
-  try {
-    const preferencesToSave: UserPreferences = {
-      userId: user.value.id,
-      dietaryTypes: formData.value.dietaryTypes || [],
-      dietaryStrict: formData.value.dietaryStrict || false,
-      allergies: formData.value.allergies || [],
-      severeAllergies: formData.value.severeAllergies || [],
-      dislikedIngredients: formData.value.dislikedIngredients || [],
-      sweetnessLevel: formData.value.sweetnessLevel || null,
-      flavourProfiles: formData.value.flavourProfiles || [],
-      updatedAt: new Date().toISOString()
-    };
+      await updatePreferences(preferencesToSave);
+      saveSuccess.value = true;
+    console.log('Preferences updated successfully:', preferencesToSave);
+      // Reset success message after 3 seconds and go back to profile
+      setTimeout(() => {
+        saveSuccess.value = false;
+        router.push('/profile');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to save preferences:', err);
+    } finally {
+      saving.value = false;
+    }
+  }else{
+    saving.value = true;
+    saveSuccess.value = false;
+    try {
+      const preferencesToSave: UserPreferences = {
+        userId: user.value.id,
+        dietaryTypes: formData.value.dietaryTypes || [],
+        dietaryStrict: formData.value.dietaryStrict || false,
+        allergies: formData.value.allergies || [],
+        severeAllergies: formData.value.severeAllergies || [],
+        dislikedIngredients: formData.value.dislikedIngredients || [],
+        tastePreferences: formData.value.tastePreferences || null,
+        flavourPreferences: formData.value.flavourPreferences || [],
+        updatedAt: new Date().toISOString()
+      };
 
-    await savePreferences(preferencesToSave);
-    saveSuccess.value = true;
+      await savePreferences(preferencesToSave);
+      saveSuccess.value = true;
 
-    // Reset success message after 3 seconds
-    setTimeout(() => {
-      saveSuccess.value = false;
-    }, 3000);
-  } catch (err) {
-    console.error('Failed to save preferences:', err);
-  } finally {
-    saving.value = false;
+      // Reset success message after 3 seconds and go back to profile
+      setTimeout(() => {
+        saveSuccess.value = false;
+        router.push('/profile');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to save preferences:', err);
+    } finally {
+      saving.value = false;
+    }
   }
+
+
 };
 </script>
 
@@ -376,13 +409,13 @@ const handleSubmit = async () => {
 
           <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
             <button
-              v-for="level in SWEETNESS_LEVELS"
+              v-for="level in TASTE_PREFERENCES"
               :key="level.value"
               type="button"
-              @click="formData.sweetnessLevel = level.value as any"
+              @click="formData.tastePreferences = level.value as any"
               :class="[
                 'px-4 py-3 rounded-lg font-medium transition-all border-2',
-                formData.sweetnessLevel === level.value
+                formData.tastePreferences === level.value
                   ? 'bg-pink-500 text-white border-pink-600'
                   : 'bg-white text-gray-700 border-gray-300 hover:border-pink-500'
               ]"
@@ -401,11 +434,11 @@ const handleSubmit = async () => {
           <p class="text-gray-600 mb-4">What flavors do you enjoy in baked goods? (Select multiple)</p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div v-for="profile in FLAVOR_PROFILES" :key="profile" class="flex items-center">
+            <div v-for="profile in FLAVOR_PREFERENCES" :key="profile" class="flex items-center">
               <input
                 :id="`flavor-${profile}`"
                 type="checkbox"
-                :checked="formData.flavourProfiles?.includes(profile)"
+                :checked="formData.flavourPreferences?.includes(profile)"
                 @change="toggleFlavourProfile(profile)"
                 class="w-4 h-4 text-purple-600 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
               />

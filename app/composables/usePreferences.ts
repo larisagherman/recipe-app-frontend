@@ -43,9 +43,18 @@ export const usePreferences = () => {
   };
 
   const updatePreferences = async (updates: Partial<UserPreferences>) => {
-    if (!preferences.value) return;
-    const updated = { ...preferences.value, ...updates };
-    await savePreferences(updated);
+    try{
+      preferences.value=await $fetch<UserPreferences>(`http://localhost:8080/user-preferences/${updates.userId}`, {
+        method: 'PUT',
+        body: updates
+      });
+        console.log('Successfully updated preferences');
+    }catch(err){
+        error.value = err instanceof Error ? err.message : 'Failed to update preferences';
+        throw err;
+    }finally {
+        loading.value = false;
+    }
   };
 
   return {

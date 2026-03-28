@@ -37,7 +37,6 @@ const handlePageChange = (newPage: number) => {
 <template>
   <div class="recipes-page">
     <div class="header-section">
-      <NuxtLink to="/" class="back-link">← Back to Home</NuxtLink>
       <h1 class="page-title">All Recipes</h1>
     </div>
 
