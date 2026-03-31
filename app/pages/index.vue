@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useAuth } from '~/composables/useAuth';
+import { useWeeklyRecommendation } from '~/composables/useWeeklyRecommendation';
 
 const { isLoggedIn, user } = useAuth();
 const userName = computed(() => user.value?.name ?? 'Guest');
+const { weeklyRecommendation, loading, error, fetchWeeklyRecommendation } = useWeeklyRecommendation();
+
+// Fetch weekly recommendation when user is available
+onMounted(async () => {
+  if (isLoggedIn.value && user.value?.id) {
+    await fetchWeeklyRecommendation(user.value.id);
+  }
+});
 </script>
 
 <template>
@@ -11,13 +20,31 @@ const userName = computed(() => user.value?.name ?? 'Guest');
     <div class="max-w-4xl w-full">
       <!-- Welcome Section -->
       <div class="text-center mb-12">
+        <div v-if="isLoggedIn">
+          <h1 class="text-5xl font-bold text-gray-900 mb-4">
+            Welcome, {{ userName }}!
+          </h1>
+          <p class="text-xl text-gray-600">
+            Discover delicious recipes tailored to your ingredients and preferences
+          </p>
+        </div>
+        <div v-else>
+          <h1 class="text-5xl font-bold text-gray-900 mb-4">
+            Welcome to Your Recipe Journey
+          </h1>
+          <p class="text-xl text-gray-600">
+            Sign in to discover recipes tailored just for you
+          </p>
+        </div>
+      </div>
 
-        <h1 class="text-5xl font-bold text-gray-900 mb-4">
-          Welcome<span v-if="isLoggedIn">, {{ userName }}</span>!
-        </h1>
-        <p class="text-xl text-gray-600">
-          Discover delicious recipes tailored to your ingredients and preferences
-        </p>
+      <!-- Weekly Recommendation Section (Only for logged-in users) -->
+      <div v-if="isLoggedIn" class="mb-12">
+        <WeeklyRecommendationCard
+          :recommendation="weeklyRecommendation"
+          :loading="loading"
+          :error="error"
+        />
       </div>
 
       <!-- Action Cards -->
