@@ -285,7 +285,6 @@ const handleSavedClick = async (recipeId: number) => {
 
       <!-- Empty State -->
       <div v-else class="text-center py-16">
-        <div class="text-6xl mb-4">🍽️</div>
         <h3 class="text-2xl font-semibold text-gray-700 mb-2">No recipes yet</h3>
         <p class="text-gray-500">Enter your ingredients above to get started!</p>
       </div>
