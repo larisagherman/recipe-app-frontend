@@ -16,6 +16,11 @@ const { loginWithGoogle, isLoggedIn, user } = useAuth();
 
         <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Recipes</span>
       </NuxtLink>
+      <NuxtLink to="/recommend"
+                class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group">
+
+        <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Recipe Finder</span>
+      </NuxtLink>
     </div>
 
     <!-- Auth Section -->

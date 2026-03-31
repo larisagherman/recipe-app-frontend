@@ -93,24 +93,7 @@ onMounted(async () => {
         </NuxtLink>
       </div>
 
-      <!-- Features Section -->
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="text-center p-6 bg-white/50 rounded-xl">
-          <div class="text-3xl mb-3">🥗</div>
-          <h3 class="font-semibold text-gray-900 mb-2">Smart Matching</h3>
-          <p class="text-sm text-gray-600">AI-powered ingredient matching</p>
-        </div>
-        <div class="text-center p-6 bg-white/50 rounded-xl">
-          <div class="text-3xl mb-3">📸</div>
-          <h3 class="font-semibold text-gray-900 mb-2">Image Recognition</h3>
-          <p class="text-sm text-gray-600">Upload photos of your ingredients</p>
-        </div>
-        <div class="text-center p-6 bg-white/50 rounded-xl">
-          <div class="text-3xl mb-3">❤️</div>
-          <h3 class="font-semibold text-gray-900 mb-2">Track Favorites</h3>
-          <p class="text-sm text-gray-600">Save and organize your recipes</p>
-        </div>
-      </div>
+
     </div>
   </div>
 </template>
