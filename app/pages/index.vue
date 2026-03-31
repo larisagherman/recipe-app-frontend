@@ -48,7 +48,7 @@ onMounted(async () => {
       </div>
 
       <!-- Action Cards -->
-      <div class="grid md:grid-cols-2 gap-8 mb-8">
+      <div v-if="!isLoggedIn" class="grid md:grid-cols-2 gap-8 mb-8">
         <!-- Get Custom Recommendation Card -->
         <NuxtLink
           to="/recommend"
@@ -71,7 +71,6 @@ onMounted(async () => {
           </div>
         </NuxtLink>
 
-        <!-- Weekly Recommendations Card -->
         <NuxtLink
           to="/recipes"
           class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border-2 border-transparent hover:border-primary-400 transform hover:-translate-y-1"
