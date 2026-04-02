@@ -1,58 +1,65 @@
 <script setup lang="ts">
 const { loginWithGoogle, isLoggedIn, user } = useAuth();
 </script>
+
+
 <template>
-  <div class="flex justify-between items-center p-4 bg-transparent backdrop-blur-sm">
-    <!-- Home Link -->
-    <div class="flex ml-8 gap-4">
-      <NuxtLink
-          to="/"
-          class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group"
-      >
-        <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Home</span>
-      </NuxtLink>
-      <NuxtLink to="/recipes"
-                class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group">
+  <nav class="flex justify-between items-center px-8 py-3 bg-brand-500/90 backdrop-blur-md">
 
-        <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Recipes</span>
+    <!-- Left: Logo + Links -->
+    <div class="flex items-center gap-8">
+      <NuxtLink to="/" class="font-bold text-white text-lg">
+        HOME
       </NuxtLink>
-      <NuxtLink to="/recommend"
-                class="flex items-center justify-center gap-2 px-4 py-2 rounded-full hover:bg-white/50 transition-all duration-150 group">
 
-        <span class="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">Recipe Finder</span>
-      </NuxtLink>
+      <div class="flex items-center gap-6 text-sm">
+        <NuxtLink to="/recommend" class="text-white/80 hover:text-white transition font-semibold">
+          Recipe Finder
+        </NuxtLink>
+        <NuxtLink to="/recipes" class="text-white/80 hover:text-white transition font-semibold">
+          View Recipes
+        </NuxtLink>
+
+      </div>
     </div>
 
-    <!-- Auth Section -->
-    <button
-        v-if="!isLoggedIn"
-        @click="loginWithGoogle"
-        class="bg-white border border-gray-300 flex items-center gap-2 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-150"
-    >
-      <img src="/google-logo.png" alt="Google" class="w-5 h-5"/>
-      <span class="font-medium text-gray-700">Sign in with Google</span>
-    </button>
-
-    <div v-else class="flex items-center gap-3">
-      <NuxtLink
-        to="/profile"
-        class="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full border border-gray-200 hover:bg-gray-100 hover:shadow-md transition-all duration-150 cursor-pointer"
+    <!-- Right: Auth -->
+    <div>
+      <!-- Not logged in -->
+      <button
+          v-if="!isLoggedIn"
+          @click="loginWithGoogle"
+          class="bg-white text-gray-800 text-md px-4 py-2 rounded-full hover:shadow-md transition flex items-center gap-2 "
       >
+        <img src="/google-logo.png" class="w-4 h-4" />
+        Sign in
+      </button>
+
+      <!-- Logged in -->
+      <NuxtLink
+          v-else
+          to="/profile"
+          class="flex items-center gap-2 px-3 py-1 rounded-full hover:bg-white/20 transition"
+      >
+
+
+        <span class="text-white text-sm hidden sm:block font-semibold">
+          {{ user?.name }}
+        </span>
         <img
           v-if="user?.photoURL"
           :src="user.photoURL"
-          :alt="user.name || 'User'"
           class="w-8 h-8 rounded-full object-cover"
-        />
-        <div v-else class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+      />
+
+        <div
+            v-else
+            class="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center text-white text-sm font-semibold"
+        >
           {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
-        </div>
-        <div class="flex flex-col">
-          <span class="text-sm font-medium text-gray-800">{{ user?.name || 'User' }}</span>
-          <span class="text-xs text-gray-500">{{ user?.email }}</span>
         </div>
       </NuxtLink>
     </div>
 
-  </div>
+  </nav>
 </template>

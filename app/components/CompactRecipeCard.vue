@@ -311,7 +311,7 @@ onBeforeUnmount(() => {
 }
 
 .compact-title {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
   overflow: hidden;

@@ -1,29 +1,29 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 @theme static {
-    /* Primary color - Orange/Amber (Main theme) */
-    --color-primary-50: #fff7ed;
-    --color-primary-100: #ffedd5;
-    --color-primary-200: #fed7aa;
-    --color-primary-300: #fdba74;
-    --color-primary-400: #fb923c;
-    --color-primary-500: #f97316;
-    --color-primary-600: #ea580c;
-    --color-primary-700: #c2410c;
-    --color-primary-800: #9a3412;
-    --color-primary-900: #7c2d12;
-    --color-primary-950: #431407;
+    /* Primary color - Cocoa Brown (Primary Action) */
+    --color-primary-50: #F8F4F1;
+    --color-primary-100: #F0E8E3;
+    --color-primary-200: #E8DEDB;
+    --color-primary-300: #E0D4D3;
+    --color-primary-400: #D8C9CB;
+    --color-primary-500: #D8A48F;
+    --color-primary-600: #C99580;
+    --color-primary-700: #B98671;
+    --color-primary-800: #A97762;
+    --color-primary-900: #996853;
+    --color-primary-950: #5D3A2D;
 
-    /* Define new custom color */
-    --color-brand-50: #fef2f2;
-    --color-brand-100: #fee2e2;
-    --color-brand-200: #fecaca;
-    --color-brand-300: #fca5a5;
-    --color-brand-400: #f87171;
-    --color-brand-500: #ef4444;
-    --color-brand-600: #dc2626;
-    --color-brand-700: #b91c1c;
-    --color-brand-800: #991b1b;
-    --color-brand-900: #7f1d1d;
-    --color-brand-950: #450a0a;
+    /* Brand colors - Blushed Peach (Primary Background) & Burnt Orange (Accents) */
+    --color-brand-50: #FEF7F3;
+    --color-brand-100: #FCE4D6;
+    --color-brand-200: #FAD1B8;
+    --color-brand-300: #F7B39E;
+    --color-brand-400: #F59A86;
+    --color-brand-500: #E37D4D;
+    --color-brand-600: #E37D4D;
+    --color-brand-700: #CC6B41;
+    --color-brand-800: #B45C36;
+    --color-brand-900: #9D502B;
+    --color-brand-950: #7D3F20;
 }

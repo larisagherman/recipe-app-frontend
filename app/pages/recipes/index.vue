@@ -23,10 +23,15 @@ watchEffect(() => {
 const handleBakedClick = async (recipeId: number) => {
   if (!user.value?.id) return;
   await toggleUserRecipeLog(user.value.id, recipeId);
+  // Refetch the logs to update the UI
+  await getUserRecipeLogs(user.value.id);
 };
+
 const handleSavedClick = async (recipeId: number) => {
   if (!user.value?.id) return;
   await toggleSavedRecipeLog(user.value.id, recipeId);
+  // Refetch the logs to update the UI
+  await getSavedRecipeLogs(user.value.id);
 };
 
 const handlePageChange = (newPage: number) => {
@@ -40,11 +45,41 @@ const handlePageChange = (newPage: number) => {
       <h1 class="page-title">All Recipes</h1>
     </div>
 
-    <div v-if="loading" class="loading-state">
-      <p>Loading recipes...</p>
+    <div v-if="loading" class="recipes-container">
+      <div class="recipe-grid">
+        <div v-for="i in 12" :key="`skeleton-${i}`" class="recipe-grid-item">
+          <div class="recipe-number">{{ i }}</div>
+          <!-- Skeleton Card -->
+          <div class="skeleton-card">
+            <div class="animate-pulse space-y-3">
+              <!-- Image skeleton -->
+              <div class="h-32 bg-gray-200 rounded-lg"></div>
+              <!-- Title skeleton -->
+              <div class="space-y-2 px-3">
+                <div class="h-5 bg-gray-200 rounded-lg w-3/4"></div>
+                <!-- Ingredients skeleton -->
+                <div class="space-y-1">
+                  <div class="h-3 bg-gray-200 rounded-lg w-full"></div>
+                  <div class="h-3 bg-gray-200 rounded-lg w-5/6"></div>
+                </div>
+                <!-- Info skeleton -->
+                <div class="flex gap-3 pt-2">
+                  <div class="h-3 bg-gray-200 rounded-lg w-1/3"></div>
+                  <div class="h-3 bg-gray-200 rounded-lg w-1/3"></div>
+                </div>
+                <!-- Button skeleton -->
+                <div class="flex gap-2 pt-2">
+                  <div class="h-8 bg-gray-200 rounded-lg flex-1"></div>
+                  <div class="h-8 bg-gray-200 rounded-lg w-10"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div v-if="error" class="error-state">
+    <div v-else-if="error" class="error-state">
       <p>Error: {{ error }}</p>
     </div>
 
@@ -220,6 +255,15 @@ const handlePageChange = (newPage: number) => {
   font-size: 1rem;
   font-weight: 500;
   color: #4b5563;
+}
+
+.skeleton-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 100%;
 }
 </style>
 
