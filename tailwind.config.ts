@@ -10,49 +10,49 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Custom Brand Color - Purple/Pink
+        // New Custom Brand Colors
         brand: {
-          50: '#fdf4ff',
-          100: '#fae8ff',
-          200: '#f5d0fe',
-          300: '#f0abfc',
-          400: '#e879f9',
-          500: '#d946ef',  // Main brand color - Vibrant purple/pink
-          600: '#c026d3',
-          700: '#a21caf',
-          800: '#86198f',
-          900: '#701a75',
-          950: '#4a044e',
+          50: '#FEF7F3',    // Lighter Blushed Peach
+          100: '#FCE4D6',   // Blushed Peach (Primary Background)
+          200: '#FAD1B8',
+          300: '#F7B39E',
+          400: '#F59A86',
+          500: '#E37D4D',   // Burnt Orange (Secondary - Accents)
+          600: '#E37D4D',
+          700: '#CC6B41',
+          800: '#B45C36',
+          900: '#9D502B',
+          950: '#7D3F20',
         },
-        // Primary colors - Orange/Amber (Main theme)
+        // Primary colors - Cocoa Brown (Updated)
         primary: {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316',
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
-          950: '#431407',
+          50: '#F8F4F1',
+          100: '#F0E8E3',
+          200: '#E8DEDB',
+          300: '#E0D4D3',
+          400: '#D8C9CB',
+          500: '#D8A48F',   // Dusty Rose (Secondary Action)
+          600: '#C99580',
+          700: '#B98671',
+          800: '#A97762',
+          900: '#996853',
+          950: '#5D3A2D',   // Cocoa Brown (Primary Action)
         },
-        // Secondary colors - Purple
+        // Secondary colors - Burnt Orange variations
         secondary: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7e22ce',
-          800: '#6b21a8',
-          900: '#581c87',
-          950: '#3b0764',
+          50: '#FEF7F3',
+          100: '#FCE4D6',
+          200: '#FAD1B8',
+          300: '#F7B39E',
+          400: '#F59A86',
+          500: '#E37D4D',
+          600: '#CC6B41',
+          700: '#B45C36',
+          800: '#9D502B',
+          900: '#7D3F20',
+          950: '#5D2F18',
         },
-        // Success colors - Green
+        // ...existing code...
         success: {
           50: '#f0fdf4',
           100: '#dcfce7',
