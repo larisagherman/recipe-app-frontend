@@ -302,7 +302,7 @@ onBeforeUnmount(() => {
 }
 
 .compact-info {
-  padding: 0.75rem;
+  padding: 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;

@@ -130,7 +130,7 @@ onMounted(async () => {
 
     <!-- How It Works Section -->
     <section v-if="!isLoggedIn" class="py-16 bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-bold text-[#5D3A2D] mb-4">How It Works</h2>
           <p class="text-xl text-[#7D4F3E]">Three simple steps to sweet success</p>
@@ -284,10 +284,10 @@ onMounted(async () => {
 
 
     <!-- Quick Action Cards (Only for logged-in users) -->
-    <section v-if="isLoggedIn" class="py-20 md:py-24 bg-white flex items-center justify-center">
+    <section v-if="isLoggedIn" class="py-20 md:py-24 flex items-center justify-center">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <h2 class="text-4xl font-bold text-[#5D3A2D] mb-12 text-center">Explore More</h2>
-        <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold text-[#5D3A2D] mb-16 text-center">Explore More</h2>
+        <div class="grid md:grid-cols-2 gap-16 max-w-4xl mx-auto">
           <!-- Baking History Card -->
           <NuxtLink
             to="/profile/history"

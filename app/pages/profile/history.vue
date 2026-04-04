@@ -13,6 +13,7 @@ const router = useRouter();
 const recipesMap = ref<Map<number, FullRecipe>>(new Map());
 const loadingRecipes = ref(false);
 const authChecked = ref(false);
+const showScrollTop = ref(false);
 
 // Wait for auth state to be checked before redirecting
 onMounted(() => {
@@ -33,7 +34,23 @@ onMounted(() => {
       if (stopWatch) stopWatch();
     }
   }, { immediate: true });
+
+  // Add scroll listener for scroll-to-top button
+  window.addEventListener('scroll', handleScroll);
 });
+
+// Handle scroll event to show/hide scroll-to-top button
+const handleScroll = () => {
+  showScrollTop.value = window.scrollY > 300;
+};
+
+// Scroll to top smoothly
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};
 
 // Fetch recipe details for each log
 const fetchRecipeDetails = async () => {
@@ -103,17 +120,31 @@ watch(
   </div>
 
   <!-- History content once auth is checked -->
-  <div v-else class="min-h-screen p-6">
+  <div v-else class="min-h-screen p-6 bg-white">
+    <!-- Scroll to Top Button (Dynamic) -->
+    <button
+      v-if="showScrollTop"
+      @click="scrollToTop"
+      class="fixed bottom-6 right-6 z-40 inline-flex items-center justify-center p-3 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 transition-all duration-300 hover:shadow-xl"
+      title="Scroll to top"
+    >
+      <UIcon name="i-lucide-arrow-up" class="size-5" />
+    </button>
+    <!-- Back Button (Under Navbar) -->
+    <div class="mb-6">
+      <NuxtLink
+          to="/profile"
+          class="inline-flex items-center gap-2 text-primary-700 hover:text-primary-900 font-medium transition-colors"
+      >
+        <span>←</span>
+        <span>Back to Profile</span>
+      </NuxtLink>
+    </div>
     <div class="max-w-6xl mx-auto">
+
+
       <!-- Header -->
       <div class="mb-8">
-        <NuxtLink
-          to="/profile"
-          class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mb-4 transition-colors"
-        >
-          <span>←</span>
-          <span>Back to Profile</span>
-        </NuxtLink>
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-4xl font-bold text-gray-900 mb-2">Your Recipe History</h1>
@@ -134,7 +165,6 @@ watch(
 
       <!-- Empty State -->
       <div v-else-if="!logs.length" class="text-center py-16">
-        <div class="text-6xl mb-4">🍰</div>
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">No recipes cooked yet</h2>
         <p class="text-gray-600 mb-6">Start cooking and your history will appear here!</p>
         <NuxtLink
