@@ -175,6 +175,7 @@ onMounted(async () => {
         </div>
       </div>
     </section>
+
     <!-- Weekly Recommendation Section (Only for logged-in users) -->
     <section v-if="isLoggedIn" class="py-4 mb-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

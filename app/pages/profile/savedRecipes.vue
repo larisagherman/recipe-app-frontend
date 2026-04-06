@@ -162,15 +162,19 @@ watch(
 
       <!-- Empty State -->
       <div v-else-if="!savedRecipes.length" class="text-center py-16">
-        <div class="text-6xl mb-4">📚</div>
+        <svg class="w-24 h-24 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3.042.525A9.006 9.006 0 002.25 9m14.25-9h.008v.008h-.008V6.042m0 0A8.966 8.966 0 0012 21c4.478 0 8.268-2.943 9.542-7A9.006 9.006 0 0021.75 9" />
+        </svg>
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">No saved recipes yet</h2>
         <p class="text-gray-600 mb-6">Start saving your favorite recipes to build your collection!</p>
         <NuxtLink
           to="/recipes"
-          class="inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-600 text-white hover:bg-primary-700 px-6 py-3"
+          class="inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-brand-500 text-white hover:bg-brand-600 px-6 py-3"
         >
           Browse Recipes
-          <span>→</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
         </NuxtLink>
       </div>
 

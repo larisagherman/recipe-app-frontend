@@ -124,15 +124,15 @@ const formatDate = (dateString: string) => {
   <div v-else class="min-h-screen bg-primary-50">
     <div class="max-w-7xl mx-auto p-4 md:p-8">
       <!-- Header -->
-      <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl shadow-lg p-8 mb-8 border border-primary-300">
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-brand-200">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h1 class="text-4xl md:text-5xl font-bold text-primary-950">{{ user?.name || 'User' }}</h1>
-            <p class="text-primary-800 text-lg mt-2">{{ user?.email }}</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">{{ user?.name || 'User' }}</h1>
+            <p class="text-gray-600 text-lg mt-2">{{ user?.email }}</p>
           </div>
           <button
             @click="logout"
-            class="px-6 py-3 bg-white text-primary-700 font-semibold rounded-lg hover:bg-primary-100 transition-all duration-150 shadow-md hover:shadow-lg border border-primary-300"
+            class="px-6 py-3 bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-600 transition-all duration-150 shadow-md hover:shadow-lg"
           >
             Log Out
           </button>
@@ -156,23 +156,23 @@ const formatDate = (dateString: string) => {
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <!-- Dietary Types Card -->
-              <div v-if="preferences.dietaryTypes?.length" class="bg-gradient-to-br from-emerald-50 to-white rounded-xl p-5 border-2 border-emerald-300 hover:border-emerald-400 transition-all">
-                <h3 class="font-bold text-emerald-900 mb-4 text-base">Dietary Types</h3>
+              <!-- Dietary Types Card - Orange -->
+              <div v-if="preferences.dietaryTypes?.length" class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-400 hover:shadow-lg transition-all">
+                <h3 class="font-bold text-primary-950 mb-4 text-base">Dietary Types</h3>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="type in preferences.dietaryTypes"
                     :key="type"
-                    class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold border border-emerald-300"
+                    class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold border border-orange-300"
                   >
                     {{ type }}
                   </span>
                 </div>
               </div>
 
-              <!-- Allergies Card -->
-              <div v-if="preferences.allergies?.length" class="bg-gradient-to-br from-rose-50 to-white rounded-xl p-5 border-2 border-rose-300 hover:border-rose-400 transition-all">
-                <h3 class="font-bold text-rose-900 mb-4 text-base">Allergies</h3>
+              <!-- Allergies Card - Red -->
+              <div v-if="preferences.allergies?.length" class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-400 hover:shadow-lg transition-all">
+                <h3 class="font-bold text-primary-950 mb-4 text-base">Allergies</h3>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="allergy in preferences.allergies"
@@ -180,8 +180,8 @@ const formatDate = (dateString: string) => {
                     :class="[
                       'px-3 py-1 rounded-full text-xs font-semibold border',
                       preferences.severeAllergies?.includes(allergy)
-                        ? 'bg-rose-200 text-rose-900 border-rose-400'
-                        : 'bg-rose-100 text-rose-700 border-rose-300'
+                        ? 'bg-red-200 text-red-900 border-red-400'
+                        : 'bg-red-100 text-red-700 border-red-300'
                     ]"
                   >
                     {{ allergy }}{{ preferences.severeAllergies?.includes(allergy) ? ' •' : '' }}
@@ -189,11 +189,11 @@ const formatDate = (dateString: string) => {
                 </div>
               </div>
 
-              <!-- Sweetness Level Card -->
-              <div v-if="preferences.tastePreferences" class="bg-gradient-to-br from-amber-50 to-white rounded-xl p-5 border-2 border-amber-300 hover:border-amber-400 transition-all">
-                <h3 class="font-bold text-amber-900 mb-4 text-base">Sweetness Level</h3>
+              <!-- Sweetness Level Card - Pink -->
+              <div v-if="preferences.tastePreferences" class="bg-white rounded-lg shadow-md p-6 border-l-4 border-pink-400 hover:shadow-lg transition-all">
+                <h3 class="font-bold text-primary-950 mb-4 text-base">Sweetness Level</h3>
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold border border-amber-300">
+                  <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold border border-pink-300">
                     {{ preferences.tastePreferences === 'notsweet' ? 'Not Sweet'
                         : preferences.tastePreferences === 'mildlysweet' ? 'Mildly Sweet'
                         : preferences.tastePreferences === 'medium' ? 'Medium'
@@ -202,28 +202,28 @@ const formatDate = (dateString: string) => {
                 </div>
               </div>
 
-              <!-- Disliked Ingredients Card -->
-              <div v-if="preferences.dislikedIngredients?.length" class="bg-gradient-to-br from-orange-50 to-white rounded-xl p-5 border-2 border-orange-300 hover:border-orange-400 transition-all">
-                <h3 class="font-bold text-orange-900 mb-4 text-base">Disliked Ingredients</h3>
+              <!-- Disliked Ingredients Card - Yellow -->
+              <div v-if="preferences.dislikedIngredients?.length" class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-400 hover:shadow-lg transition-all">
+                <h3 class="font-bold text-primary-950 mb-4 text-base">Disliked Ingredients</h3>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="ingredient in preferences.dislikedIngredients"
                     :key="ingredient"
-                    class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold border border-orange-300"
+                    class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold border border-yellow-300"
                   >
                     {{ ingredient }}
                   </span>
                 </div>
               </div>
 
-              <!-- Flavor Preferences Card -->
-              <div v-if="preferences.flavourPreferences?.length" class="bg-gradient-to-br from-violet-50 to-white rounded-xl p-5 border-2 border-violet-300 hover:border-violet-400 transition-all md:col-span-2">
-                <h3 class="font-bold text-violet-900 mb-4 text-base">Flavor Profiles</h3>
+              <!-- Flavor Preferences Card - Purple -->
+              <div v-if="preferences.flavourPreferences?.length" class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-400 hover:shadow-lg transition-all md:col-span-2">
+                <h3 class="font-bold text-primary-950 mb-4 text-base">Flavor Profiles</h3>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="flavor in preferences.flavourPreferences"
                     :key="flavor"
-                    class="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-semibold border border-violet-300"
+                    class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold border border-purple-300"
                   >
                     {{ flavor }}
                   </span>
@@ -239,12 +239,12 @@ const formatDate = (dateString: string) => {
           </div>
 
           <!-- No preferences set -->
-          <div v-else class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl shadow-lg border-2 border-primary-300 p-8 text-center">
-            <h3 class="text-2xl font-bold text-primary-950 mb-2">Set Your Preferences</h3>
-            <p class="text-primary-900 mb-6">Customize your recipe recommendations to match your lifestyle and taste</p>
+          <div v-else class="bg-white rounded-2xl shadow-lg border border-brand-200 p-8 text-center">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Set Your Preferences</h3>
+            <p class="text-gray-600 mb-6">Customize your recipe recommendations to match your lifestyle and taste</p>
             <NuxtLink
               to="/profile/preferences"
-              class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 shadow-md hover:shadow-lg bg-primary-700 text-white hover:bg-primary-800 px-8 py-4"
+              class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 shadow-md hover:shadow-lg bg-brand-500 text-white hover:bg-brand-600 px-8 py-4"
             >
               Create Your Preferences
             </NuxtLink>
@@ -254,26 +254,26 @@ const formatDate = (dateString: string) => {
         <!-- Right Column: Quick Stats Dashboard -->
         <div class="space-y-6">
           <!-- History Stats Card -->
-          <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl shadow-lg border border-primary-300 p-6 hover:shadow-xl transition-all">
-            <h3 class="text-lg font-bold text-primary-950 mb-4">Baking History</h3>
-            <p class="text-4xl font-bold text-primary-700 mb-2">{{ logs.length }}</p>
-            <p class="text-primary-900 text-sm mb-4">recipes in your history</p>
+          <div class="bg-white rounded-2xl shadow-lg border border-brand-200 p-6 hover:shadow-xl transition-all">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Baking History</h3>
+            <p class="text-4xl font-bold text-brand-600 mb-2">{{ logs.length }}</p>
+            <p class="text-gray-600 text-sm mb-4">recipes in your history</p>
             <NuxtLink
               to="/profile/history"
-              class="w-full px-4 py-2 bg-primary-700 text-white font-semibold rounded-lg hover:bg-primary-800 transition-all duration-150 text-center text-sm"
+              class="w-full px-4 py-2 bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-600 transition-all duration-150 text-center text-sm"
             >
               View Full History
             </NuxtLink>
           </div>
 
           <!-- Saved Recipes Stats Card -->
-          <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl shadow-lg border border-primary-300 p-6 hover:shadow-xl transition-all">
-            <h3 class="text-lg font-bold text-primary-950 mb-4">Saved Recipes</h3>
-            <p class="text-4xl font-bold text-primary-700 mb-2">{{ savedRecipes.length }}</p>
-            <p class="text-primary-900 text-sm mb-4">recipes saved</p>
+          <div class="bg-white rounded-2xl shadow-lg border border-primary-200 p-6 hover:shadow-xl transition-all">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Saved Recipes</h3>
+            <p class="text-4xl font-bold text-primary-600 mb-2">{{ savedRecipes.length }}</p>
+            <p class="text-gray-600 text-sm mb-4">recipes saved</p>
             <NuxtLink
               to="/profile/savedRecipes"
-              class="w-full px-4 py-2 bg-primary-700 text-white font-semibold rounded-lg hover:bg-primary-800 transition-all duration-150 text-center text-sm"
+              class="w-full px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-150 text-center text-sm"
             >
               View All Saved
             </NuxtLink>
@@ -284,71 +284,71 @@ const formatDate = (dateString: string) => {
       <!-- Recent History Section -->
       <div v-if="recentHistoryItems.length > 0" class="mb-8">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-primary-950">Recent History</h2>
-          <NuxtLink to="/profile/history" class="text-primary-700 font-semibold hover:text-primary-800">View All</NuxtLink>
+          <h2 class="text-2xl font-bold text-gray-900">Recent History</h2>
+          <NuxtLink to="/profile/history" class="text-brand-600 font-semibold hover:text-brand-700">View All</NuxtLink>
         </div>
 
         <div v-if="loadingHistoryRecipes" class="text-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-700 mx-auto"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500 mx-auto"></div>
         </div>
-          <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div
-              v-for="(historyItem, idx) in recentHistoryItems"
-              :key="idx"
-              class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-150 overflow-hidden border-t-4 border-primary-700"
-            >
-              <div v-if="historyRecipesMap.get(historyItem.recipeId)" class="h-full flex flex-col">
-                <div v-if="!getRecipeImage(historyRecipesMap.get(historyItem.recipeId))" class="h-40 bg-gradient-to-br from-yellow-100 to-yellow-50 flex items-center justify-center overflow-hidden">
-                  <div class="flex flex-col items-center gap-2">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" alt="Cupcake" class="w-20 h-20 object-contain" />
-                    <p class="text-xs font-semibold text-yellow-700">Image not found</p>
-                  </div>
+        <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            v-for="(historyItem, idx) in recentHistoryItems"
+            :key="idx"
+            class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-150 overflow-hidden border-t-4 border-brand-500"
+          >
+            <div v-if="historyRecipesMap.get(historyItem.recipeId)" class="h-full flex flex-col">
+              <div v-if="!getRecipeImage(historyRecipesMap.get(historyItem.recipeId))" class="h-40 bg-gray-100 flex items-center justify-center overflow-hidden">
+                <div class="flex flex-col items-center gap-2">
+                  <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" alt="Cupcake" class="w-20 h-20 object-contain" />
+                  <p class="text-xs font-semibold text-gray-600">Image not found</p>
                 </div>
-                <img v-else :src="getRecipeImage(historyRecipesMap.get(historyItem.recipeId))" :alt="historyRecipesMap.get(historyItem.recipeId)?.name" class="w-full h-40 object-cover" />
-                <div class="p-4 flex-grow flex flex-col">
-                  <h3 class="font-bold text-primary-950 mb-2 line-clamp-2">{{ historyRecipesMap.get(historyItem.recipeId)?.name }}</h3>
-                  <p class="text-sm text-primary-700 mb-4">{{ formatDate(historyItem.cookedAt) }}</p>
-                  <NuxtLink
-                    :to="`/recipes/${historyItem.recipeId}`"
-                    class="mt-auto px-4 py-2 bg-primary-700 text-white font-semibold rounded-lg hover:bg-primary-800 transition-all duration-150 text-center text-sm"
-                  >
-                    View Recipe
-                  </NuxtLink>
-                </div>
+              </div>
+              <img v-else :src="getRecipeImage(historyRecipesMap.get(historyItem.recipeId))" :alt="historyRecipesMap.get(historyItem.recipeId)?.name" class="w-full h-40 object-cover" />
+              <div class="p-4 flex-grow flex flex-col">
+                <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">{{ historyRecipesMap.get(historyItem.recipeId)?.name }}</h3>
+                <p class="text-sm text-gray-600 mb-4">{{ formatDate(historyItem.cookedAt) }}</p>
+                <NuxtLink
+                  :to="`/recipes/${historyItem.recipeId}`"
+                  class="mt-auto px-4 py-2 bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-600 transition-all duration-150 text-center text-sm"
+                >
+                  View Recipe
+                </NuxtLink>
               </div>
             </div>
           </div>
+        </div>
       </div>
 
       <!-- Recent Saved Recipes Section -->
       <div v-if="recentSavedRecipes.length > 0" class="mb-32">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-primary-950">Saved Recipes</h2>
-          <NuxtLink to="/profile/savedRecipes" class="text-primary-700 font-semibold hover:text-primary-800">View All</NuxtLink>
+          <h2 class="text-2xl font-bold text-gray-900">Saved Recipes</h2>
+          <NuxtLink to="/profile/savedRecipes" class="text-brand-600 font-semibold hover:text-brand-700">View All</NuxtLink>
         </div>
 
         <div v-if="loadingSavedRecipes" class="text-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-700 mx-auto"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500 mx-auto"></div>
         </div>
         <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div
             v-for="(savedItem, idx) in recentSavedRecipes"
             :key="idx"
-            class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-150 overflow-hidden border-t-4 border-primary-700"
+            class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-150 overflow-hidden border-t-4 border-brand-500"
           >
             <div v-if="savedRecipesMap.get(savedItem.recipeId)" class="h-full flex flex-col">
-              <div v-if="!getRecipeImage(savedRecipesMap.get(savedItem.recipeId))" class="h-40 bg-gradient-to-br from-yellow-100 to-yellow-50 flex items-center justify-center overflow-hidden">
+              <div v-if="!getRecipeImage(savedRecipesMap.get(savedItem.recipeId))" class="h-40 bg-gray-100 flex items-center justify-center overflow-hidden">
                 <div class="flex flex-col items-center gap-2">
                   <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" alt="Cupcake" class="w-20 h-20 object-contain" />
-                  <p class="text-xs font-semibold text-yellow-700">Image not found</p>
+                  <p class="text-xs font-semibold text-gray-600">Image not found</p>
                 </div>
               </div>
               <img v-else :src="getRecipeImage(savedRecipesMap.get(savedItem.recipeId))" :alt="savedRecipesMap.get(savedItem.recipeId)?.name" class="w-full h-40 object-cover" />
               <div class="p-4 flex-grow flex flex-col">
-                <h3 class="font-bold text-primary-950 mb-2 line-clamp-2">{{ savedRecipesMap.get(savedItem.recipeId)?.name }}</h3>
+                <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">{{ savedRecipesMap.get(savedItem.recipeId)?.name }}</h3>
                 <NuxtLink
                   :to="`/recipes/${savedItem.recipeId}`"
-                  class="mt-auto px-4 py-2 bg-primary-700 text-white font-semibold rounded-lg hover:bg-primary-800 transition-all duration-150 text-center text-sm"
+                  class="mt-auto px-4 py-2 bg-brand-500 text-white font-semibold rounded-lg hover:bg-brand-600 transition-all duration-150 text-center text-sm"
                 >
                   View Recipe
                 </NuxtLink>
@@ -359,14 +359,14 @@ const formatDate = (dateString: string) => {
       </div>
 
       <!-- Empty State Message -->
-      <div v-if="recentHistoryItems.length === 0 && recentSavedRecipes.length === 0 && !logsLoading" class="bg-white rounded-2xl shadow-lg border-t-4 border-primary-700 p-12 text-center mb-32">
-        <h3 class="text-2xl font-bold text-primary-950 mb-4">Welcome to Your Profile</h3>
-        <p class="text-primary-900 mb-8 max-w-md mx-auto">
+      <div v-if="recentHistoryItems.length === 0 && recentSavedRecipes.length === 0 && !logsLoading" class="bg-white rounded-2xl shadow-lg border-t-4 border-brand-500 p-12 text-center mb-32">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Welcome to Your Profile</h3>
+        <p class="text-gray-700 mb-8 max-w-md mx-auto">
           Start exploring recipes to see your history and save your favorite recipes here
         </p>
         <NuxtLink
           to="/recipes"
-          class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 shadow-md hover:shadow-lg bg-primary-700 text-white hover:bg-primary-800 px-8 py-4"
+          class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 shadow-md hover:shadow-lg bg-brand-500 text-white hover:bg-brand-600 px-8 py-4"
         >
           Explore Recipes
         </NuxtLink>

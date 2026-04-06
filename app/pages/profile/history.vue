@@ -212,18 +212,25 @@ watch(
                   </NuxtLink>
                   <div class="flex items-center gap-4 text-sm text-gray-500">
                     <div class="flex items-center gap-1">
-                      <span>🕐</span>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                       <span>{{ formatDate(log.cookedAt) }}</span>
                     </div>
                     <div class="flex items-center gap-1">
-                      <span>📅</span>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
                       <span>{{ new Date(log.cookedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}</span>
                     </div>
                   </div>
                 </div>
                 <div class="ml-4">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    ✓ Cooked
+                  <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Cooked
                   </span>
                 </div>
               </div>
@@ -258,19 +265,23 @@ watch(
       <!-- Summary Stats -->
       <div v-if="logs.length > 0" class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white rounded-xl shadow-md p-6 text-center border border-gray-100">
-          <div class="text-3xl mb-2">🍽️</div>
+          <UIcon name="i-lucide-scroll-text" class="w-8 h-8 bg-brand-500"/>
+
           <div class="text-2xl font-bold text-gray-900">{{ logs.length }}</div>
           <div class="text-sm text-gray-600">Total Recipes</div>
         </div>
         <div class="bg-white rounded-xl shadow-md p-6 text-center border border-gray-100">
-          <div class="text-3xl mb-2">📅</div>
+          <UIcon name="i-lucide-calendar-days" class="w-8 h-8 bg-brand-500"/>
+
           <div class="text-2xl font-bold text-gray-900">
             {{ Math.ceil((new Date().getTime() - new Date(sortedLogs[sortedLogs.length - 1]?.cookedAt).getTime()) / (1000 * 60 * 60 * 24)) }}
           </div>
           <div class="text-sm text-gray-600">Days Cooking</div>
         </div>
         <div class="bg-white rounded-xl shadow-md p-6 text-center border border-gray-100">
-          <div class="text-3xl mb-2">🔥</div>
+          <svg class="w-8 h-8 mx-auto mb-2 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
           <div class="text-2xl font-bold text-gray-900">
             {{ sortedLogs[0] ? formatDate(sortedLogs[0].cookedAt) : 'N/A' }}
           </div>
