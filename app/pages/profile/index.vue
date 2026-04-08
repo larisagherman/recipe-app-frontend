@@ -2,12 +2,14 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { usePreferences } from '~/composables/usePreferences';
 import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
+import { useWeeklyRecommendation } from '~/composables/useWeeklyRecommendation';
 import { useRecipe } from '~/composables/useRecipe';
 import type { FullRecipe } from '~/types/fullRecipe';
 
 const { user, isLoggedIn, logout } = useAuth();
 const { preferences, fetchPreferences, loading: preferencesLoading } = usePreferences();
 const { getUserRecipeLogs, logs, loading: logsLoading, getSavedRecipeLogs, savedRecipes } = useUserRecipeLogs();
+const { fetchWeeklyRecommendations, weeklyRecommendations } = useWeeklyRecommendation();
 const { getRecipeById } = useRecipe();
 const router = useRouter();
 const authChecked = ref(false);
@@ -37,6 +39,7 @@ onMounted(() => {
         fetchPreferences(newUser.id);
         getUserRecipeLogs(newUser.id);
         getSavedRecipeLogs(newUser.id);
+        fetchWeeklyRecommendations(newUser.id);
       }
     }
   }, { immediate: true });
@@ -144,7 +147,7 @@ const formatDate = (dateString: string) => {
         <!-- Left Column: Preferences (wider) -->
         <div class="lg:col-span-2">
           <!-- Preferences Section -->
-          <div v-if="preferences && !preferencesLoading" class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-primary-700">
+          <div v-if="preferences && !preferencesLoading" class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-primary-700 h-full flex flex-col">
             <div class="flex items-start justify-between mb-8">
               <h2 class="text-3xl font-bold text-primary-950">Your Preferences</h2>
               <NuxtLink
@@ -155,7 +158,7 @@ const formatDate = (dateString: string) => {
               </NuxtLink>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
               <!-- Dietary Types Card - Orange -->
               <div v-if="preferences.dietaryTypes?.length" class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-400 hover:shadow-lg transition-all">
                 <h3 class="font-bold text-primary-950 mb-4 text-base">Dietary Types</h3>
@@ -278,6 +281,19 @@ const formatDate = (dateString: string) => {
               View All Saved
             </NuxtLink>
           </div>
+
+          <!-- Weekly Recipes Stats Card -->
+          <div class="bg-white rounded-2xl shadow-lg border border-primary-200 p-6 hover:shadow-xl transition-all">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Weekly Recipes</h3>
+            <p class="text-4xl font-bold text-brand-600 mb-2">{{ weeklyRecommendations.length }}</p>
+            <p class="text-gray-600 text-sm mb-4">weeks of recipes</p>
+            <NuxtLink
+              to="/profile/weeklyRecipes"
+              class="w-full px-4 py-2 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all duration-150 text-center text-sm"
+            >
+              View Weekly Recipes
+            </NuxtLink>
+          </div>
         </div>
       </div>
 
@@ -374,7 +390,6 @@ const formatDate = (dateString: string) => {
     </div>
   </div>
 </template>
-
 
 
 

@@ -5,6 +5,7 @@ export const useWeeklyRecommendation = () => {
 
   // State
   const weeklyRecommendation = ref<WeeklyRecommendation | null>(null);
+  const weeklyRecommendations = ref<WeeklyRecommendation[]>([]);
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
   const retryCount = ref<number>(0);
@@ -31,7 +32,7 @@ export const useWeeklyRecommendation = () => {
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       const data = await $fetch<WeeklyRecommendation>(
-        `http://localhost:8080/weekly-recommendations/user/${userId}`,
+        `http://localhost:8080/user/${userId}/weekly-recommendation`,
         {
           signal: controller.signal,
           retry: 2, // Built-in retry
@@ -91,17 +92,42 @@ export const useWeeklyRecommendation = () => {
     }
   };
 
+  // Fetch all weekly recommendations for a user
+  const fetchWeeklyRecommendations = async (userId: number): Promise<WeeklyRecommendation[]> => {
+    if (!userId) return [];
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      console.log(`Fetching weekly recommendations for user ${userId}`);
+
+      const data = await $fetch<WeeklyRecommendation[]>(
+        `http://localhost:8080/user/${userId}/weekly-recommendations`
+      );
+
+      weeklyRecommendations.value = Array.isArray(data) ? data : [];
+      console.log('Successfully fetched weekly recommendations:', weeklyRecommendations.value);
+      return weeklyRecommendations.value;
+
+    } catch (err) {
+      console.error('Failed to fetch weekly recommendations:', err);
+      error.value = 'Failed to fetch weekly recommendations';
+      weeklyRecommendations.value = [];
+      return [];
+
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     weeklyRecommendation,
+    weeklyRecommendations,
     loading,
     error,
     retryCount,
     fetchWeeklyRecommendation,
+    fetchWeeklyRecommendations,
   };
 };
-
-
-
-
-
-
