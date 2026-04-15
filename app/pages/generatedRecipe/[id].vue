@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGeneratedRecipe } from '~/composables/useGeneratedRecipe'
+import { useAuth } from '~/composables/useAuth'
 
 const route = useRoute()
 const recipeId = Number(route.params.id)
 const { recipe, loading, parsedIngredients, parsedDirections, getGeneratedRecipe } = useGeneratedRecipe()
+const { user } = useAuth()
+const BakeAlongChat = defineAsyncComponent(() => import('~/components/BakeAlongChat.vue'))
 
 onMounted(() => {
   getGeneratedRecipe(recipeId)
@@ -14,6 +17,21 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 ">
+
+    <!-- Bake Along Chat - Floating Button -->
+    <Suspense>
+      <template #default>
+        <BakeAlongChat
+          v-if="user?.id && recipe?.id"
+          :recipe-id="recipe.id"
+          :user-id="user.id"
+          :recipe-name="recipe.name"
+        />
+      </template>
+      <template #fallback>
+        <div />
+      </template>
+    </Suspense>
 
     <!-- Loading State -->
     <div v-if="loading" class="max-w-7xl mx-auto px-4 py-16">

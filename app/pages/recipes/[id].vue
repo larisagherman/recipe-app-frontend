@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
 import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs'
@@ -9,7 +9,7 @@ const { user } = useAuth()
 const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs()
 const route = useRoute()
 const recipeId = Number(route.params.id)
-
+const BakeAlongChat = defineAsyncComponent(() => import('~/components/BakeAlongChat.vue'))
 onMounted(() => {
   getRecipeById(recipeId)
   if (user.value?.id) {
@@ -51,6 +51,20 @@ const directionsList = computed(() => {
 <template>
   <div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
 
+    <!-- Bake Along Chat - Floating Button -->
+    <Suspense>
+      <template #default>
+        <BakeAlongChat
+          v-if="user?.id && recipe?.id"
+          :recipe-id="recipe.id"
+          :user-id="user.id"
+          :recipe-name="recipe.name"
+        />
+      </template>
+      <template #fallback>
+        <div />
+      </template>
+    </Suspense>
 
     <!-- Loading State -->
     <div v-if="!recipe" class="max-w-7xl mx-auto px-4 py-16">

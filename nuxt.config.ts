@@ -16,7 +16,8 @@ export default defineNuxtConfig({
       public: {
         apiKey: process.env.API_KEY,
 
-        apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
+        apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080',
+        wsBaseUrl: process.env.NUXT_PUBLIC_WS_BASE_URL || 'ws://localhost:8080'
       }
   },
   ui: {
