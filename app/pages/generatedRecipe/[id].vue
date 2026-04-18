@@ -26,6 +26,7 @@ onMounted(() => {
           :recipe-id="recipe.id"
           :user-id="user.id"
           :recipe-name="recipe.name"
+          :is-generated="true"
         />
       </template>
       <template #fallback>

@@ -3,8 +3,12 @@ import { Client, type IMessage } from '@stomp/stompjs';
 import type { ChatMessageRequest, ChatMessageResponse, ChatState } from '~/types/chatMessage';
 import SockJS from 'sockjs-client';
 
-export const useBakeAlongChat = (recipeId: number, userId: string) => {
+export const useBakeAlongChat = (recipeId: number, userId: string, isGenerated: boolean = false) => {
   let stompClient: Client | null = null;
+  
+  // Store isGenerated in a closure variable to ensure it persists
+  const storedIsGenerated = isGenerated;
+
 
   const state = reactive<ChatState>({
     messages: [],
@@ -108,12 +112,13 @@ export const useBakeAlongChat = (recipeId: number, userId: string) => {
       };
       state.messages.push(userMessage);
 
-      // Send to server
-      const request: ChatMessageRequest = {
-        recipeId,
-        userId,
-        message,
-      };
+        // Send to server
+        const request: ChatMessageRequest = {
+          recipeId,
+          userId,
+          message,
+          isGenerated: storedIsGenerated,
+        };
 
       console.log('📤 Sending message to /app/chat.send:', request);
       console.log('🔍 Current userId for response routing:', userId);

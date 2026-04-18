@@ -59,6 +59,7 @@ const directionsList = computed(() => {
           :recipe-id="recipe.id"
           :user-id="user.id"
           :recipe-name="recipe.name"
+          :is-generated="false"
         />
       </template>
       <template #fallback>

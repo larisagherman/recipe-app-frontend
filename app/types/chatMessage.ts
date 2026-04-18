@@ -1,7 +1,9 @@
 export interface ChatMessageRequest {
   recipeId: number;
+  isGenerated:boolean;
   userId: string;
   message: string;
+
 }
 
 export interface ChatMessageResponse {
