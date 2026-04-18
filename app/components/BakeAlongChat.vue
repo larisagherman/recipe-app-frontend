@@ -5,15 +5,20 @@ interface Props {
   recipeId: number;
   userId: string;
   recipeName?: string;
+  isGenerated?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   recipeName: 'Recipe',
+  isGenerated: false,
 });
+
+console.log('🔍 BakeAlongChat props.isGenerated:', props.isGenerated, 'Type:', typeof props.isGenerated);
 
 const { state, connect, disconnect, sendMessage, clearMessages } = useBakeAlongChat(
   props.recipeId,
-  props.userId
+  props.userId,
+  props.isGenerated
 );
 
 const inputMessage = ref('');
@@ -81,8 +86,8 @@ onUnmounted(() => {
       :class="[
         'flex items-center gap-2 px-6 py-3 rounded-full font-semibold shadow-lg transition-all duration-300 transform hover:scale-105',
         isChatReady || !state.isConnected
-          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-xl'
-          : 'bg-gray-400 text-white cursor-not-allowed'
+          ? 'bg-brand-500 text-white hover:shadow-xl'
+          : 'bg-neutral-400 text-white cursor-not-allowed'
       ]"
       :disabled="state.isLoading"
     >
@@ -106,7 +111,7 @@ onUnmounted(() => {
       class="fixed bottom-24 right-6 w-96 max-w-[90vw] h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300"
     >
       <!-- Header -->
-      <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-4 flex items-center justify-between">
+      <div class="bg-brand-500 text-white p-4 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +128,7 @@ onUnmounted(() => {
         </div>
         <button
           @click="closeChat"
-          class="p-1 hover:bg-orange-600 rounded-lg transition-colors"
+          class="p-1 hover:bg-secondary-600 rounded-lg transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -140,18 +145,18 @@ onUnmounted(() => {
       </div>
 
       <!-- Status Message -->
-      <div v-if="!state.isConnected && state.error" class="bg-red-50 border-b border-red-200 px-4 py-2">
-        <p class="text-sm text-red-700">{{ state.error }}</p>
+      <div v-if="!state.isConnected && state.error" class="bg-danger-50 border-b border-danger-200 px-4 py-2">
+        <p class="text-sm text-danger-700">{{ state.error }}</p>
       </div>
 
-      <div v-if="!state.isConnected && !state.error" class="bg-yellow-50 border-b border-yellow-200 px-4 py-2">
-        <p class="text-sm text-yellow-700">Connecting to chat...</p>
+      <div v-if="!state.isConnected && !state.error" class="bg-warning-50 border-b border-warning-200 px-4 py-2">
+        <p class="text-sm text-warning-700">Connecting to chat...</p>
       </div>
 
       <!-- Messages Container -->
       <div
         ref="messagesContainer"
-        class="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-4"
+        class="flex-1 overflow-y-auto p-4 bg-brand-50 space-y-4"
       >
         <!-- Welcome Message -->
         <div
@@ -159,12 +164,12 @@ onUnmounted(() => {
           class="flex justify-center items-center h-full"
         >
           <div class="text-center">
-            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="w-8 h-8 text-orange-600"
+                class="w-8 h-8 text-brand-500"
               >
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
               </svg>
@@ -187,12 +192,12 @@ onUnmounted(() => {
             :class="[
               'max-w-xs px-4 py-2 rounded-lg text-sm',
               msg.type === 'user'
-                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-br-none'
+                ? 'bg-brand-500 text-white rounded-br-none'
                 : msg.type === 'ai'
-                ? 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
+                ? 'bg-brand-50 text-primary-950 border border-brand-200 rounded-bl-none'
                 : msg.type === 'hint'
-                ? 'bg-blue-50 text-blue-900 border border-blue-200 rounded-bl-none'
-                : 'bg-gray-100 text-gray-700 rounded-bl-none'
+                ? 'bg-info-50 text-info-900 border border-info-200 rounded-bl-none'
+                : 'bg-neutral-100 text-neutral-700 rounded-bl-none'
             ]"
           >
             <p class="leading-relaxed">{{ msg.message }}</p>
@@ -204,19 +209,19 @@ onUnmounted(() => {
 
         <!-- Loading State -->
         <div v-if="state.isLoading" class="flex justify-start">
-          <div class="bg-white text-gray-800 border border-gray-200 px-4 py-2 rounded-lg rounded-bl-none">
+          <div class="bg-brand-50 text-primary-950 border border-brand-200 px-4 py-2 rounded-lg rounded-bl-none">
             <div class="flex gap-2">
-              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s" />
-              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s" />
+              <div class="w-2 h-2 bg-brand-400 rounded-full animate-bounce" />
+              <div class="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style="animation-delay: 0.1s" />
+              <div class="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style="animation-delay: 0.2s" />
             </div>
           </div>
         </div>
       </div>
 
       <!-- Input Area -->
-      <div class="border-t border-gray-200 bg-white p-4">
-        <div v-if="!state.isConnected" class="text-center text-sm text-gray-500 mb-2">
+      <div class="border-t border-brand-200 bg-white p-4">
+        <div v-if="!state.isConnected" class="text-center text-sm text-neutral-500 mb-2">
           Connecting...
         </div>
         <div class="flex gap-2">
@@ -225,13 +230,13 @@ onUnmounted(() => {
             @keydown="handleKeydown"
             :disabled="!state.isConnected"
             placeholder="Ask me anything about the recipe..."
-            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none max-h-24 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            class="flex-1 px-4 py-2 border border-brand-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none max-h-24 disabled:bg-neutral-100 disabled:cursor-not-allowed"
             rows="1"
           />
           <button
             @click="handleSendMessage"
             :disabled="!state.isConnected || !inputMessage.trim() || state.isLoading"
-            class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+            class="px-4 py-2 bg-brand-500 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

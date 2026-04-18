@@ -13,7 +13,6 @@ export const useGeneratedRecipe = () => {
     if (!recipe.value?.ingredients) return []
 
     const ingredientsStr = recipe.value.ingredients
-    console.log('Raw ingredients string:', ingredientsStr)
 
     const items: string[] = []
     let currentItem = ''
@@ -47,8 +46,6 @@ export const useGeneratedRecipe = () => {
       items.push(trimmed)
     }
 
-    console.log('Parsed ingredients count:', items.length)
-    console.log('Parsed ingredients:', items)
     return items
   })
 
@@ -59,13 +56,11 @@ export const useGeneratedRecipe = () => {
     let steps: string[] = []
     let directions = recipe.value.directions
 
-    console.log('Raw directions string:', directions)
 
     // Try to split by numbered pattern (1., 2., 3., etc.)
     const numberedPattern = /^\d+\.\s+/m
 
     if (numberedPattern.test(directions)) {
-      console.log('Found numbered format, splitting by pattern')
       // Split by pattern like "1. ", "2. ", etc.
       steps = directions
         .split(/(?=\d+\.\s)/) // Look ahead for number dot space
@@ -75,19 +70,16 @@ export const useGeneratedRecipe = () => {
         })
         .filter(step => step.length > 0)
     } else if (directions.includes('\\n\\n')) {
-      console.log('Found escaped double newlines (\\\\n\\\\n)')
       steps = directions
         .split('\\n\\n')
         .map(step => step.trim())
         .filter(step => step.length > 0)
     } else if (directions.includes('\n\n')) {
-      console.log('Found literal double newlines')
       steps = directions
         .split('\n\n')
         .map(step => step.trim())
         .filter(step => step.length > 0)
     } else if (directions.includes('\\n')) {
-      console.log('Found escaped single newlines (\\\\n)')
       steps = directions
         .split('\\n')
         .map(step => step.trim())
@@ -97,8 +89,6 @@ export const useGeneratedRecipe = () => {
       steps = [directions.trim()]
     }
 
-    console.log('Parsed steps count:', steps.length)
-    console.log('Parsed directions:', steps)
     return steps
   })
 
@@ -111,8 +101,7 @@ export const useGeneratedRecipe = () => {
       console.log('Fetching from:', url)
       const data = await $fetch<FullRecipe>(url)
       recipe.value = data
-      console.log('Generated recipe fetched:', data)
-      console.log('Raw directions:', data.directions)
+      console.log('Generated recipe fetched')
       return data
     } catch (e: unknown) {
       error.value = e instanceof Error ? e.message : 'Failed to fetch generated recipe'
