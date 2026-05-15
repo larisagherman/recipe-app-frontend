@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { watch, ref, onMounted } from 'vue';
+import { watch, ref, onMounted, computed } from 'vue';
 import { useAuth } from '~/composables/useAuth';
 import { useWeeklyRecommendation } from '~/composables/useWeeklyRecommendation';
 import { useRecipe } from '~/composables/useRecipe';
+import { usePreferences } from '~/composables/usePreferences';
 import type { FullRecipe } from '~/types/fullRecipe';
 
 const { fetchWeeklyRecommendations, weeklyRecommendations, loading } = useWeeklyRecommendation();
 const { user, isLoggedIn } = useAuth();
 const { getRecipeById } = useRecipe();
+const { fetchPreferences, preferences } = usePreferences();
 const router = useRouter();
 
 const recipesMap = ref<Map<number, FullRecipe>>(new Map());
 const loadingRecipes = ref(false);
 const authChecked = ref(false);
 const showScrollTop = ref(false);
+const hasPreferences = computed(() => preferences.value && Object.keys(preferences.value).length > 0);
 
 // Wait for auth state to be checked before redirecting
 onMounted(() => {
@@ -68,8 +71,11 @@ watch(
   () => user?.value?.id,
   async (id) => {
     if (!id) return;
-    await fetchWeeklyRecommendations(id);
-    await fetchRecipeDetails();
+    await fetchPreferences(id);
+    if (hasPreferences.value) {
+      await fetchWeeklyRecommendations(id);
+      await fetchRecipeDetails();
+    }
   },
   { immediate: true }
 );
@@ -135,6 +141,23 @@ watch(
       </div>
 
       <!-- Empty State -->
+      <div v-else-if="!hasPreferences" class="text-center py-16">
+        <svg class="w-24 h-24 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.343 3.94c.09-.542.56-1.04 1.11-1.04h1.093c.55 0 1.02.498 1.11 1.04l.158.943h.093c.473 0 .898.193 1.2.512l.668.668c.318.318.512.747.512 1.2v1.093c0 .55-.498 1.02-1.04 1.11l-.943.158v.093c0 .473-.193.898-.512 1.2l-.668.668c-.318.318-.747.512-1.2.512h-1.093c-.55 0-1.02-.498-1.11-1.04l-.158-.943h-.093c-.473 0-.898-.193-1.2-.512l-.668-.668c-.318-.318-.512-.747-.512-1.2v-1.093c0-.55.498-1.02 1.04-1.11l.943-.158v-.093c0-.473.193-.898.512-1.2l.668-.668c.318-.318.747-.512 1.2-.512h.093l.158-.943z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3.042.525A9.006 9.006 0 002.25 9m14.25-9h.008v.008h-.008V6.042m0 0A8.966 8.966 0 0012 21c4.478 0 8.268-2.943 9.542-7A9.006 9.006 0 0021.75 9" />
+        </svg>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Set Your Preferences</h2>
+        <p class="text-gray-600 mb-6">To get weekly recipe recommendations, you need to set your preferences first.</p>
+        <NuxtLink
+          to="/profile/preferences"
+          class="inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-150 shadow-sm hover:shadow-md bg-primary-500 text-white hover:bg-primary-600 px-6 py-3"
+        >
+          Set Preferences
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </NuxtLink>
+      </div>
       <div v-else-if="!weeklyRecommendations.length" class="text-center py-16">
         <svg class="w-24 h-24 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3.042.525A9.006 9.006 0 002.25 9m14.25-9h.008v.008h-.008V6.042m0 0A8.966 8.966 0 0012 21c4.478 0 8.268-2.943 9.542-7A9.006 9.006 0 0021.75 9" />

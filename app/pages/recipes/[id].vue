@@ -3,10 +3,12 @@ import { onMounted, computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
 import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs'
+import { useAuthNotification } from '~/composables/useAuthNotification'
 
 const { recipe, getRecipeById } = useRecipe()
 const { user } = useAuth()
 const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs()
+const { isNotificationVisible, notificationMessage, notificationType, showLoginPrompt, hideNotification } = useAuthNotification()
 const route = useRoute()
 const recipeId = Number(route.params.id)
 const BakeAlongChat = defineAsyncComponent(() => import('~/components/BakeAlongChat.vue'))
@@ -19,12 +21,18 @@ onMounted(() => {
 })
 
 const handleBakedToggle = async () => {
-  if (!user.value?.id) return
+  if (!user.value?.id) {
+    showLoginPrompt('bake')
+    return
+  }
   await toggleUserRecipeLog(user.value.id, recipeId)
 }
 
 const handleSavedToggle = async () => {
-  if (!user.value?.id) return
+  if (!user.value?.id) {
+    showLoginPrompt('save')
+    return
+  }
   await toggleSavedRecipeLog(user.value.id, recipeId)
 }
 
@@ -50,6 +58,13 @@ const directionsList = computed(() => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    <!-- Auth Prompt Modal -->
+    <AuthPromptModal
+      :is-visible="isNotificationVisible"
+      :message="notificationMessage"
+      :type="notificationType"
+      @close="hideNotification"
+    />
 
     <!-- Bake Along Chat - Floating Button -->
     <Suspense>
@@ -57,7 +72,7 @@ const directionsList = computed(() => {
         <BakeAlongChat
           v-if="user?.id && recipe?.id"
           :recipe-id="recipe.id"
-          :user-id="user.id"
+          :user-id="String(user.id)"
           :recipe-name="recipe.name"
           :is-generated="false"
         />
@@ -100,7 +115,7 @@ const directionsList = computed(() => {
           </div>
 
           <!-- Baked and Save Buttons - Top Right -->
-          <div v-if="user" class="absolute top-6 right-6 flex gap-3">
+          <div class="absolute top-6 right-6 flex gap-3">
             <!-- Baked Button -->
             <button
                 @click="handleBakedToggle"

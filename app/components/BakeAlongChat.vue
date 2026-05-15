@@ -27,6 +27,24 @@ const messagesContainer = ref<HTMLDivElement>();
 
 const isChatReady = computed(() => state.isConnected);
 
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const formatAiMessage = (message: string) => {
+  const escaped = escapeHtml(message);
+  // Support markdown-style formatting in AI responses
+  // Bold: **text** → <strong>text</strong>
+  // Italic: *text* → <em>text</em>
+  return escaped
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+};
+
 const handleSendMessage = async () => {
   if (!inputMessage.value.trim()) return;
 
@@ -200,7 +218,12 @@ onUnmounted(() => {
                 : 'bg-neutral-100 text-neutral-700 rounded-bl-none'
             ]"
           >
-            <p class="leading-relaxed">{{ msg.message }}</p>
+            <p
+              v-if="msg.type === 'ai'"
+              class="leading-relaxed"
+              v-html="formatAiMessage(msg.message)"
+            />
+            <p v-else class="leading-relaxed">{{ msg.message }}</p>
             <p v-if="msg.timestamp" class="text-xs opacity-70 mt-1">
               {{ new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
             </p>

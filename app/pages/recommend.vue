@@ -5,10 +5,12 @@ import type { FullRecipe } from "~/types/fullRecipe";
 import { useAuth } from '~/composables/useAuth';
 import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
 import { useRecipe } from '~/composables/useRecipe';
+import { useAuthNotification } from '~/composables/useAuthNotification';
 
 const { user } = useAuth();
 const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs();
 const { analyzeImage, loading } = useRecipe();
+const { isNotificationVisible, notificationMessage, notificationType, showLoginPrompt, hideNotification } = useAuthNotification();
 
 const recommendations = ref<Recommendation[]>([])
 const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -85,21 +87,39 @@ watchEffect(() => {
 })
 
 const handleBakedClick = async (recipeId: number) => {
-  if (!user.value?.id) return;
+  if (!user.value?.id) {
+    showLoginPrompt('bake');
+    return;
+  }
   await toggleUserRecipeLog(user.value.id, recipeId);
   // Refetch the logs to update the UI
   await getUserRecipeLogs(user.value.id);
 };
 
 const handleSavedClick = async (recipeId: number) => {
-  if (!user.value?.id) return;
+  if (!user.value?.id) {
+    showLoginPrompt('save');
+    return;
+  }
   await toggleSavedRecipeLog(user.value.id, recipeId);
   // Refetch the logs to update the UI
   await getSavedRecipeLogs(user.value.id);
 };
+
+const handleShowLoginPrompt = (type: 'save' | 'bake') => {
+  showLoginPrompt(type);
+};
 </script>
 <template>
   <div class="min-h-screen bg-gradient-to-br from-[#FCE4D6] to-[#F9D7C3]">
+    <!-- Auth Prompt Modal -->
+    <AuthPromptModal
+      :is-visible="isNotificationVisible"
+      :message="notificationMessage"
+      :type="notificationType"
+      @close="hideNotification"
+    />
+
     <!-- Header Section -->
     <div class="max-w-7xl mx-auto px-4 py-12">
       <div class="text-center mb-12">
@@ -266,6 +286,7 @@ const handleSavedClick = async (recipeId: number) => {
                 :is-saved="isRecipeSaved(recipe.id)"
                 @toggle-baked="handleBakedClick"
                 @toggle-saved="handleSavedClick"
+                @show-login-prompt="handleShowLoginPrompt"
               />
 
               <!-- Missing Info -->

@@ -3,10 +3,12 @@ import { watchEffect, onMounted } from "vue";
 import { useRecipe } from '~/composables/useRecipe';
 import { useAuth } from '~/composables/useAuth';
 import { useUserRecipeLogs } from '~/composables/useUserRecipeLogs';
+import { useAuthNotification } from '~/composables/useAuthNotification';
 
 const { recipes, fetchRecipes, loading, error, pagination } = useRecipe();
 const { user } = useAuth();
 const { getUserRecipeLogs, isRecipeBaked, toggleUserRecipeLog, getSavedRecipeLogs, isRecipeSaved, toggleSavedRecipeLog } = useUserRecipeLogs();
+const { isNotificationVisible, notificationMessage, notificationType, showLoginPrompt, hideNotification } = useAuthNotification();
 
 // Fetch recipes on mount
 onMounted(() => {
@@ -21,14 +23,20 @@ watchEffect(() => {
 });
 
 const handleBakedClick = async (recipeId: number) => {
-  if (!user.value?.id) return;
+  if (!user.value?.id) {
+    showLoginPrompt('bake');
+    return;
+  }
   await toggleUserRecipeLog(user.value.id, recipeId);
   // Refetch the logs to update the UI
   await getUserRecipeLogs(user.value.id);
 };
 
 const handleSavedClick = async (recipeId: number) => {
-  if (!user.value?.id) return;
+  if (!user.value?.id) {
+    showLoginPrompt('save');
+    return;
+  }
   await toggleSavedRecipeLog(user.value.id, recipeId);
   // Refetch the logs to update the UI
   await getSavedRecipeLogs(user.value.id);
@@ -37,10 +45,22 @@ const handleSavedClick = async (recipeId: number) => {
 const handlePageChange = (newPage: number) => {
   fetchRecipes(newPage, pagination.value.size);
 };
+
+const handleShowLoginPrompt = (type: 'save' | 'bake') => {
+  showLoginPrompt(type);
+};
 </script>
 
 <template>
   <div class="recipes-page">
+    <!-- Auth Prompt Modal -->
+    <AuthPromptModal
+      :is-visible="isNotificationVisible"
+      :message="notificationMessage"
+      :type="notificationType"
+      @close="hideNotification"
+    />
+
     <div class="header-section">
       <h1 class="page-title">All Recipes</h1>
     </div>
@@ -93,6 +113,7 @@ const handlePageChange = (newPage: number) => {
             :is-saved="isRecipeSaved(recipe.id)"
             @toggle-baked="handleBakedClick"
             @toggle-saved="handleSavedClick"
+            @show-login-prompt="handleShowLoginPrompt"
           />
         </div>
       </div>

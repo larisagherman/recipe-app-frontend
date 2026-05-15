@@ -2,15 +2,18 @@
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import { useAuth } from '~/composables/useAuth';
 import { useWeeklyRecommendation } from '~/composables/useWeeklyRecommendation';
+import { usePreferences } from '~/composables/usePreferences';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const { isLoggedIn, user } = useAuth();
 const userName = computed(() => user.value?.name ?? 'Guest');
 const { weeklyRecommendation, loading, error, fetchWeeklyRecommendation } = useWeeklyRecommendation();
+const { preferences, fetchPreferences } = usePreferences();
 
 const searchSectionRef = ref<HTMLDivElement | null>(null);
 const hasFetchedRecommendation = ref<boolean>(false);
+const hasPreferences = computed(() => preferences.value && Object.keys(preferences.value).length > 0);
 
 const RECIPE_CATEGORIES = [
   {
@@ -47,13 +50,16 @@ const retryFetchRecommendation = async () => {
 // Watch for user changes and fetch recommendation
 watchEffect(async () => {
   if (isLoggedIn.value && user.value?.id && !hasFetchedRecommendation.value) {
-    console.log('User detected, fetching weekly recommendation...');
+    console.log('User detected, fetching data...');
     try {
-      await fetchWeeklyRecommendation(user.value.id);
+      await fetchPreferences(user.value.id);
+      if (hasPreferences.value) {
+        await fetchWeeklyRecommendation(user.value.id);
+      }
       hasFetchedRecommendation.value = true;
-      console.log('Weekly recommendation fetched successfully');
+      console.log('Data fetching complete.');
     } catch (err) {
-      console.error('Failed to fetch weekly recommendation in watchEffect:', err);
+      console.error('Failed to fetch data in watchEffect:', err);
     }
   }
 });
@@ -61,12 +67,15 @@ watchEffect(async () => {
 // Fallback: Fetch in onMounted as well
 onMounted(async () => {
   if (isLoggedIn.value && user.value?.id && !hasFetchedRecommendation.value) {
-    console.log('Component mounted, ensuring recommendation is fetched...');
+    console.log('Component mounted, ensuring data is fetched...');
     try {
-      await fetchWeeklyRecommendation(user.value.id);
+      await fetchPreferences(user.value.id);
+      if (hasPreferences.value) {
+        await fetchWeeklyRecommendation(user.value.id);
+      }
       hasFetchedRecommendation.value = true;
     } catch (err) {
-      console.error('Failed to fetch weekly recommendation on mount:', err);
+      console.error('Failed to fetch data on mount:', err);
     }
   }
 });
@@ -214,6 +223,23 @@ onMounted(async () => {
             >
               Try Again
             </button>
+          </div>
+        </div>
+
+        <!-- Prompt to set preferences -->
+        <div v-else-if="!hasPreferences" class="rounded-2xl shadow-lg p-8 border border-primary-200 bg-primary-50">
+          <div class="text-center">
+            <svg class="w-12 h-12 text-primary-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.343 3.94c.09-.542.56-1.04 1.11-1.04h1.093c.55 0 1.02.498 1.11 1.04l.158.943h.093c.473 0 .898.193 1.2.512l.668.668c.318.318.512.747.512 1.2v1.093c0 .55-.498 1.02-1.04 1.11l-.943.158v.093c0 .473-.193.898-.512 1.2l-.668.668c-.318.318-.747.512-1.2.512h-1.093c-.55 0-1.02-.498-1.11-1.04l-.158-.943h-.093c-.473 0-.898-.193-1.2-.512l-.668-.668c-.318-.318-.512-.747-.512-1.2v-1.093c0-.55.498-1.02 1.04-1.11l.943-.158v-.093c0-.473.193-.898.512-1.2l.668-.668c.318.318.747.512 1.2-.512h.093l.158-.943z" />
+            </svg>
+            <h3 class="text-lg font-semibold text-primary-800 mb-2">Set Your Preferences for Weekly Picks</h3>
+            <p class="text-primary-700 mb-4">To get personalized weekly recipe recommendations, please set your preferences.</p>
+            <NuxtLink
+                to="/profile/preferences"
+                class="inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-300 bg-primary-600 text-white hover:bg-primary-700 px-6 py-2"
+            >
+              Set Preferences
+            </NuxtLink>
           </div>
         </div>
 
@@ -381,12 +407,12 @@ onMounted(async () => {
         <p class="text-xl text-[#7D4F3E] mb-8">
           Sign in to save your favorite recipes, track your baking history, and get personalized recommendations
         </p>
-        <button
-          @click="scrollToSearch"
+        <NuxtLink
+          to="/recommend"
           class="inline-flex items-center justify-center gap-2 font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl bg-[#E37D4D] text-white hover:bg-[#D46B3B] px-8 py-4 text-lg hover:-translate-y-1 transform"
         >
           Get Started
-        </button>
+        </NuxtLink>
       </div>
     </section>
   </div>

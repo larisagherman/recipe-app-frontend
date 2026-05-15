@@ -3,8 +3,7 @@ import type {FullRecipe} from "~/types/fullRecipe";
 import type {Recommendation} from "~/types/Recommendation";
 import type {PaginatedRecipes} from "~/types/paginatedRecipes";
 export const useRecipe = () => {
-    const config = useRuntimeConfig();
-    const baseUrl = config.public.apiBaseUrl || 'http://localhost:8080';
+    const baseUrl ='http://localhost:8080';
 
     // State
     const recipes = ref<FullRecipe[]>([]);
@@ -134,39 +133,36 @@ export const useRecipe = () => {
     };
 
     // Analyze image with Gemini
-    const analyzeImage = async (
-        file: File,
-        topK: number = 10,
-        forbiddenIngredients: string[] = [],
-        strict: boolean = false
-    ) => {
+    const analyzeImage = async (file: File, topK = 10, forbiddenIngredients: string[] = [], strict = false) => {
         loading.value = true;
         error.value = null;
+
         try {
             const formData = new FormData();
             formData.append('file', file);
 
-            // Build query params
-            const params: Record<string, any> = {
-                topK: topK,
-                strict: strict
-            };
+            const url = new URL(`${baseUrl}/gemini/analyze`);
+            url.searchParams.append('topK', String(topK));
+            url.searchParams.append('strict', String(strict));
 
-            // Only add forbiddenIngredients if not empty
-            if (forbiddenIngredients.length > 0) {
-                params.forbiddenIngredients = forbiddenIngredients;
-            }
+            forbiddenIngredients.forEach(i =>
+                url.searchParams.append('forbiddenIngredients', i)
+            );
 
-            const data = await $fetch<Recommendation[]>(`${baseUrl}/gemini/analyze`, {
+            const res = await fetch(url.toString(), {
                 method: 'POST',
                 body: formData,
-                params: params,
             });
+
+            if (!res.ok) throw new Error(await res.text());
+
+            const data = await res.json();
             recommendations.value = data;
             return data;
-        } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : 'Failed to analyze image';
+
+        } catch (e) {
             console.error('Error analyzing image:', e);
+            error.value = e instanceof Error ? e.message : 'Failed';
             return [];
         } finally {
             loading.value = false;

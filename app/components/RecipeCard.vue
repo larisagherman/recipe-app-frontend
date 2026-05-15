@@ -1,4 +1,4 @@
-<script setup lang="ts">
+a<script setup lang="ts">
 import { computed } from "vue";
 import type { FullRecipe } from "~/types/fullRecipe";
 
